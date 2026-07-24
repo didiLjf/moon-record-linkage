@@ -1,0 +1,57 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "DidiLs/moon-record-linkage/src/graph"
+
+import {
+  "DidiLs/moon-record-linkage/src/core",
+  "moonbitlang/core/debug",
+}
+
+// Values
+pub fn entity_graph_to_clusters(EntityGraph, Map[String, @core.Record]) -> Array[@core.EntityCluster]
+
+// Errors
+
+// Types and methods
+pub struct CanonicalMerger {
+  strategy : MergeStrategy
+} derive(Eq, @debug.Debug)
+pub fn CanonicalMerger::merge_clusters(Self, Array[@core.EntityCluster], pair_scores? : Map[String, Double]) -> Array[@core.EntityCluster]
+pub fn CanonicalMerger::new(strategy? : MergeStrategy) -> Self
+pub fn CanonicalMerger::select_canonical(Self, Array[@core.Record], pair_scores? : Map[String, Double]) -> @core.Record
+
+pub struct DSU {
+  parent : Map[String, String]
+  rank : Map[String, Int]
+  mut component_count : Int
+} derive(@debug.Debug)
+pub fn DSU::add(Self, String) -> Unit
+pub fn DSU::component_count(Self) -> Int
+pub fn DSU::components(Self) -> Map[String, Array[String]]
+pub fn DSU::find(Self, String) -> String
+pub fn DSU::from_pairs(Array[(String, String)]) -> Self
+pub fn DSU::new() -> Self
+pub fn DSU::same_component(Self, String, String) -> Bool
+pub fn DSU::union(Self, String, String) -> Unit
+
+pub struct EntityGraph {
+  dsu : DSU
+  edges : Array[(String, String, Double)]
+} derive(@debug.Debug)
+pub fn EntityGraph::add_match(Self, String, String, Double, threshold? : Double) -> Unit
+pub fn EntityGraph::add_record(Self, String) -> Unit
+pub fn EntityGraph::are_linked(Self, String, String) -> Bool
+pub fn EntityGraph::cluster_count(Self) -> Int
+pub fn EntityGraph::clusters(Self) -> Map[String, Array[String]]
+pub fn EntityGraph::new() -> Self
+
+pub enum MergeStrategy {
+  HighestConfidence
+  MajorityVote
+  MostRecent
+  FirstRecord
+} derive(Eq, @debug.Debug)
+
+// Type aliases
+
+// Traits
+
