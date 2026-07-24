@@ -1,0 +1,168 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "DidiLs/moon-record-linkage/src/core"
+
+import {
+  "moonbitlang/core/debug",
+}
+
+// Values
+
+// Errors
+
+// Types and methods
+pub(all) enum BlockingStrategy {
+  StandardBlocking(Array[String])
+  SortedNeighborhood(String, Int)
+  CanopyClustering(String, Double, Double)
+  LocalitySensitiveHashing(String, Int, Int)
+  CompositeBlocking(Array[BlockingStrategy])
+} derive(Eq, @debug.Debug)
+
+pub struct EntityCluster {
+  cluster_id : String
+  records : Array[Record]
+  canonical_record : Record
+  confidence : Double
+} derive(Eq, @debug.Debug)
+pub fn EntityCluster::add_record(Self, Record) -> Unit
+pub fn EntityCluster::new(String, Record, confidence? : Double) -> Self
+
+pub struct EvaluationMetrics {
+  mut true_positives : Int
+  mut false_positives : Int
+  mut true_negatives : Int
+  mut false_negatives : Int
+  mut total_pairs_evaluated : Int
+  total_possible_pairs : Int
+} derive(Eq, @debug.Debug)
+pub fn EvaluationMetrics::accuracy(Self) -> Double
+pub fn EvaluationMetrics::add_observation(Self, Bool, Bool) -> Unit
+pub fn EvaluationMetrics::f1_score(Self) -> Double
+pub fn EvaluationMetrics::get_fn(Self) -> Int
+pub fn EvaluationMetrics::get_fp(Self) -> Int
+pub fn EvaluationMetrics::get_tn(Self) -> Int
+pub fn EvaluationMetrics::get_tp(Self) -> Int
+pub fn EvaluationMetrics::new(total_possible_pairs? : Int) -> Self
+pub fn EvaluationMetrics::pair_completeness(Self) -> Double
+pub fn EvaluationMetrics::precision(Self) -> Double
+pub fn EvaluationMetrics::recall(Self) -> Double
+pub fn EvaluationMetrics::reduction_ratio(Self) -> Double
+pub fn EvaluationMetrics::summary_report(Self) -> String
+
+pub struct FieldComparisonConfig {
+  field_name : String
+  metric : MetricType
+  weight : Double
+  missing_value_penalty : Double
+} derive(Eq, @debug.Debug)
+
+pub(all) enum FieldType {
+  Text
+  Numeric
+  Date
+  Geo
+  ArrayText
+} derive(Eq, @debug.Debug)
+
+pub(all) enum FieldValue {
+  StringVal(String)
+  IntVal(Int)
+  DoubleVal(Double)
+  DateVal(String)
+  GeoVal(Double, Double)
+  ArrayVal(Array[String])
+  NullVal
+} derive(Eq, @debug.Debug)
+pub fn FieldValue::is_null(Self) -> Bool
+pub fn FieldValue::to_str(Self) -> String
+
+pub struct LinkageConfig {
+  blocking_strategies : Array[BlockingStrategy]
+  field_comparisons : Array[FieldComparisonConfig]
+  mut thresholds : ModelThresholds
+  enable_em_training : Bool
+  max_em_iterations : Int
+  em_convergence_delta : Double
+} derive(Eq, @debug.Debug)
+pub fn LinkageConfig::add_blocking(Self, BlockingStrategy) -> Unit
+pub fn LinkageConfig::add_field_comparison(Self, String, MetricType, weight? : Double, penalty? : Double) -> Unit
+pub fn LinkageConfig::default() -> Self
+pub fn LinkageConfig::field_count(Self) -> Int
+pub fn LinkageConfig::new(String) -> Self
+pub fn LinkageConfig::set_thresholds(Self, Double, Double) -> Unit
+pub fn LinkageConfig::total_weight(Self) -> Double
+
+pub struct MatchPair {
+  record_a : Record
+  record_b : Record
+  score : Double
+  status : MatchStatus
+  field_scores : Map[String, Double]
+} derive(Eq, @debug.Debug)
+pub fn MatchPair::new(Record, Record, Double, MatchStatus) -> Self
+pub fn MatchPair::set_field_score(Self, String, Double) -> Unit
+
+pub(all) enum MatchStatus {
+  Match
+  PossibleMatch
+  NonMatch
+} derive(Eq, @debug.Debug)
+
+pub(all) enum MetricType {
+  ExactMatch
+  Levenshtein
+  DamerauLevenshtein
+  JaroWinkler
+  JaccardNgram(Int)
+  Cosine
+  SoftTFIDF(Double)
+  NumericAbsolute(Double)
+  NumericRelative(Double)
+  GeoHaversine(Double)
+  PhoneticSoundex
+  PhoneticMetaphone
+} derive(Eq, @debug.Debug)
+
+pub struct ModelThresholds {
+  match_threshold : Double
+  non_match_threshold : Double
+} derive(Eq, @debug.Debug)
+
+pub struct Record {
+  id : String
+  attributes : Map[String, FieldValue]
+  source : String
+  timestamp : Int64
+} derive(Eq, @debug.Debug)
+pub fn Record::get_double(Self, String) -> Double
+pub fn Record::get_field(Self, String) -> FieldValue
+pub fn Record::get_geo(Self, String) -> (Double, Double)
+pub fn Record::get_string(Self, String) -> String
+pub fn Record::new(String, source? : String, timestamp? : Int64) -> Self
+pub fn Record::set_field(Self, String, FieldValue) -> Unit
+
+pub(all) enum RecordLinkageError {
+  InvalidSchema(String)
+  MissingField(String)
+  TypeMismatch(String)
+  PipelineError(String)
+  ExporterError(String)
+} derive(Eq, @debug.Debug)
+
+pub struct Schema {
+  fields : Array[SchemaField]
+} derive(Eq, @debug.Debug)
+pub fn Schema::add_field(Self, String, FieldType, required? : Bool) -> Unit
+pub fn Schema::new() -> Self
+pub fn Schema::validate(Self, Record) -> Result[Unit, RecordLinkageError]
+
+pub struct SchemaField {
+  name : String
+  field_type : FieldType
+  required : Bool
+} derive(Eq, @debug.Debug)
+
+// Type aliases
+
+// Traits
+
