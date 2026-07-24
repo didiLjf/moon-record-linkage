@@ -1,0 +1,66 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "DidiLs/moon-record-linkage/src/similarity"
+
+// Values
+pub fn age_bin_similarity(Int, Int, bin_size? : Int) -> Double
+
+pub fn cosine_similarity(Array[String], Array[String]) -> Double
+
+pub fn damerau_levenshtein_distance(String, String) -> Int
+
+pub fn damerau_levenshtein_similarity(String, String) -> Double
+
+pub fn date_similarity(String, String, max_days? : Int) -> Double
+
+pub fn geo_haversine_similarity(Double, Double, Double, Double, max_km? : Double) -> Double
+
+pub fn hamming_distance(String, String) -> Int
+
+pub fn hamming_similarity(String, String) -> Double
+
+pub fn haversine_distance_km(Double, Double, Double, Double) -> Double
+
+pub fn jaccard_similarity(Array[String], Array[String]) -> Double
+
+pub fn jaro(String, String) -> Double
+
+pub fn jaro_winkler(String, String, prefix_weight? : Double) -> Double
+
+pub fn jaro_winkler_match(String, String, threshold? : Double) -> Bool
+
+pub fn lcs_length(String, String) -> Int
+
+pub fn lcs_similarity(String, String) -> Double
+
+pub fn levenshtein_distance(String, String) -> Int
+
+pub fn levenshtein_similarity(String, String) -> Double
+
+pub fn longest_common_substring_length(String, String) -> Int
+
+pub fn longest_common_substring_similarity(String, String) -> Double
+
+pub fn monge_elkan(Array[String], Array[String], (String, String) -> Double) -> Double
+
+pub fn ngram_jaccard(String, String, n? : Int) -> Double
+
+pub fn numeric_absolute_similarity(Double, Double, max_diff? : Double) -> Double
+
+pub fn numeric_relative_similarity(Double, Double, max_pct? : Double) -> Double
+
+pub fn overlap_similarity(Array[String], Array[String]) -> Double
+
+pub fn parse_date_to_days(String) -> Int
+
+pub fn same_city_bucket(Double, Double, Double, Double, bucket_deg? : Double) -> Bool
+
+pub fn year_exact_similarity(Int, Int) -> Double
+
+// Errors
+
+// Types and methods
+
+// Type aliases
+
+// Traits
+
