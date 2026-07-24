@@ -1,0 +1,34 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "DidiLs/moon-record-linkage/src/pipeline"
+
+import {
+  "DidiLs/moon-record-linkage/src/core",
+  "moonbitlang/core/debug",
+}
+
+// Values
+
+// Errors
+
+// Types and methods
+pub struct BatchLinkageResult {
+  match_pairs : Array[@core.MatchPair]
+  possible_pairs : Array[@core.MatchPair]
+  clusters : Array[@core.EntityCluster]
+  metrics : @core.EvaluationMetrics
+  mut candidate_pair_count : Int
+} derive(@debug.Debug)
+pub fn BatchLinkageResult::new() -> Self
+
+pub struct BatchPipeline {
+  config : @core.LinkageConfig
+  record_lookup : Map[String, @core.Record]
+} derive(@debug.Debug)
+pub fn BatchPipeline::new(@core.LinkageConfig) -> Self
+pub fn BatchPipeline::run_dedup(Self, Array[@core.Record]) -> BatchLinkageResult
+pub fn BatchPipeline::run_link(Self, Array[@core.Record], Array[@core.Record]) -> BatchLinkageResult
+
+// Type aliases
+
+// Traits
+

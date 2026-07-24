@@ -1,0 +1,6 @@
+import {
+  "DidiLs/moon-record-linkage/src/core",
+  "DidiLs/moon-record-linkage/src/similarity",
+  "DidiLs/moon-record-linkage/src/blocking",
+  "DidiLs/moon-record-linkage/src/graph",
+}
