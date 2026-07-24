@@ -1,0 +1,4 @@
+import {
+  "DidiLs/moon-record-linkage/src/core",
+  "DidiLs/moon-record-linkage/src/pipeline",
+}

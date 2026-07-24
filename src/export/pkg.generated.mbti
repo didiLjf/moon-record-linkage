@@ -1,0 +1,41 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "DidiLs/moon-record-linkage/src/export"
+
+import {
+  "DidiLs/moon-record-linkage/src/core",
+  "DidiLs/moon-record-linkage/src/pipeline",
+}
+
+// Values
+pub fn clusters_to_csv(Array[@core.EntityCluster]) -> String
+
+pub fn entity_cluster_to_json(@core.EntityCluster) -> String
+
+pub fn escape_csv_field(String) -> String
+
+pub fn escape_json_string(String) -> String
+
+pub fn format_blocking_report(Int, Int) -> String
+
+pub fn format_metrics_report(@core.EvaluationMetrics) -> String
+
+pub fn linkage_result_to_json(@pipeline.BatchLinkageResult) -> String
+
+pub fn match_pair_to_json(@core.MatchPair) -> String
+
+pub fn match_pairs_to_csv(Array[@core.MatchPair]) -> String
+
+pub fn record_to_json(@core.Record) -> String
+
+pub fn records_to_csv(Array[@core.Record], Array[String]) -> String
+
+pub fn records_to_json(Array[@core.Record]) -> String
+
+// Errors
+
+// Types and methods
+
+// Type aliases
+
+// Traits
+
