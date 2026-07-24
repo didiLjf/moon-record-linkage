@@ -1,0 +1,80 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "DidiLs/moon-record-linkage/src/blocking"
+
+import {
+  "DidiLs/moon-record-linkage/src/core",
+  "moonbitlang/core/debug",
+}
+
+// Values
+pub fn canopies_to_pairs(Array[Canopy]) -> Array[(String, String)]
+
+pub fn cross_match_pairs(BlockingIndex, BlockingIndex) -> Array[(String, String)]
+
+// Errors
+
+// Types and methods
+pub struct BlockingIndex {
+  blocks : Map[String, Array[String]]
+  field_names : Array[String]
+} derive(@debug.Debug)
+pub fn BlockingIndex::add_record(Self, @core.Record) -> Unit
+pub fn BlockingIndex::block_count(Self) -> Int
+pub fn BlockingIndex::build_from(Self, Array[@core.Record]) -> Unit
+pub fn BlockingIndex::candidate_pairs(Self) -> Array[(String, String)]
+pub fn BlockingIndex::compute_key(Self, @core.Record) -> String
+pub fn BlockingIndex::new(Array[String]) -> Self
+
+pub struct Canopy {
+  center_id : String
+  members : Array[String]
+} derive(@debug.Debug)
+
+pub struct CanopyBlocker {
+  key_field : String
+  t1 : Double
+  t2 : Double
+} derive(Eq, @debug.Debug)
+pub fn CanopyBlocker::build_canopies(Self, Array[@core.Record]) -> Array[Canopy]
+pub fn CanopyBlocker::new(String, t1? : Double, t2? : Double) -> Self
+
+pub struct LSHBlocker {
+  key_field : String
+  num_hashes : Int
+  num_bands : Int
+  rows_per_band : Int
+  ngram_size : Int
+} derive(Eq, @debug.Debug)
+pub fn LSHBlocker::build_index(Self, Array[@core.Record]) -> LSHIndex
+pub fn LSHBlocker::candidate_pairs(Self, Array[@core.Record]) -> Array[(String, String)]
+pub fn LSHBlocker::new(String, num_hashes? : Int, num_bands? : Int, ngram_size? : Int) -> Self
+
+pub struct LSHIndex {
+  band_buckets : Array[Map[String, Array[String]]]
+  num_bands : Int
+  rows_per_band : Int
+} derive(@debug.Debug)
+pub fn LSHIndex::add_signature(Self, String, Array[Int]) -> Unit
+pub fn LSHIndex::candidate_pairs(Self) -> Array[(String, String)]
+pub fn LSHIndex::new(Int, Int) -> Self
+
+pub struct MultiKeyBlocker {
+  indexes : Array[BlockingIndex]
+} derive(@debug.Debug)
+pub fn MultiKeyBlocker::add_index(Self, BlockingIndex) -> Unit
+pub fn MultiKeyBlocker::all_candidate_pairs(Self) -> Array[(String, String)]
+pub fn MultiKeyBlocker::new() -> Self
+
+pub struct SNMBlocker {
+  key_field : String
+  window_size : Int
+} derive(Eq, @debug.Debug)
+pub fn SNMBlocker::build_sorted_keys(Self, Array[@core.Record]) -> Array[(String, String)]
+pub fn SNMBlocker::candidate_pairs(Self, Array[@core.Record]) -> Array[(String, String)]
+pub fn SNMBlocker::cross_candidate_pairs(Self, Array[@core.Record], Array[@core.Record]) -> Array[(String, String)]
+pub fn SNMBlocker::new(String, window_size? : Int) -> Self
+
+// Type aliases
+
+// Traits
+
