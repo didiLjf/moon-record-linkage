@@ -1,0 +1,8 @@
+import {
+  "DidiLs/moon-record-linkage/src/core",
+  "DidiLs/moon-record-linkage/src/normalization",
+  "DidiLs/moon-record-linkage/src/phonetic",
+  "DidiLs/moon-record-linkage/src/similarity",
+  "DidiLs/moon-record-linkage/src/pipeline",
+  "DidiLs/moon-record-linkage/src/export",
+}
