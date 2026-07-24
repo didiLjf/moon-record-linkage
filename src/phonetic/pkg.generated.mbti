@@ -1,0 +1,30 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "DidiLs/moon-record-linkage/src/phonetic"
+
+// Values
+pub fn metaphone(String) -> String
+
+pub fn metaphone_match(String, String) -> Bool
+
+pub fn mra_encode(String) -> String
+
+pub fn mra_match(String, String) -> Bool
+
+pub fn mra_similarity(String, String) -> Double
+
+pub fn nysiis(String) -> String
+
+pub fn nysiis_match(String, String) -> Bool
+
+pub fn soundex(String) -> String
+
+pub fn soundex_match(String, String) -> Bool
+
+// Errors
+
+// Types and methods
+
+// Type aliases
+
+// Traits
+
