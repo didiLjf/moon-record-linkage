@@ -1,0 +1,62 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "DidiLs/moon-record-linkage/src/normalization"
+
+// Values
+pub fn apply_cleaners(String, Array[(String) -> String]) -> String
+
+pub fn char_ngram_set(String, Int) -> Array[String]
+
+pub fn char_ngrams(String, Int) -> Array[String]
+
+pub fn clean_text(String) -> String
+
+pub fn filter_stop_words(Array[String], stop_words? : Array[String]) -> Array[String]
+
+pub fn is_alnum(Char) -> Bool
+
+pub fn is_alpha(Char) -> Bool
+
+pub fn is_digit(Char) -> Bool
+
+pub fn normalize_address(String) -> String
+
+pub fn normalize_company_name(String) -> String
+
+pub fn normalize_email(String) -> String
+
+pub fn normalize_id_card(String) -> String
+
+pub fn normalize_person_name(String) -> String
+
+pub fn normalize_phone(String) -> String
+
+pub fn normalize_whitespace(String) -> String
+
+pub fn strip_non_alpha(String) -> String
+
+pub fn strip_non_digit(String) -> String
+
+pub fn strip_punctuation(String) -> String
+
+pub fn to_lowercase(String) -> String
+
+pub fn to_uppercase(String) -> String
+
+pub fn token_frequency(Array[String]) -> Map[String, Int]
+
+pub fn tokenize_and_filter(String) -> Array[String]
+
+pub fn trim_ascii(String) -> String
+
+pub fn word_bigrams(String) -> Array[String]
+
+pub fn word_tokenize(String) -> Array[String]
+
+// Errors
+
+// Types and methods
+
+// Type aliases
+
+// Traits
+
