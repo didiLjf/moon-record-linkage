@@ -1,0 +1,5 @@
+// import {
+//   "DidiLs/moon-record-linkage" @lib,
+// }
+
+pkgtype(kind: "executable")

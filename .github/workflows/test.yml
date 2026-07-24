@@ -1,0 +1,32 @@
+name: MoonBit CI
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup MoonBit Toolchain
+        uses: moonbitlang/setup-moonbit@v1
+        with:
+          version: 'latest'
+
+      - name: Verify Code Formatting
+        run: moon fmt --check
+
+      - name: Interface Integrity Check
+        run: moon info
+
+      - name: Type Check & Lint
+        run: moon check
+
+      - name: Run Test Suite
+        run: moon test
