@@ -1,0 +1,94 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "DidiLs/moon-record-linkage/src/model"
+
+import {
+  "DidiLs/moon-record-linkage/src/core",
+  "moonbitlang/core/debug",
+}
+
+// Values
+pub fn eval_rule(RuleExpr, RuleContext) -> Bool
+
+// Errors
+
+// Types and methods
+pub struct FSFieldParams {
+  field_name : String
+  mut m_prob : Double
+  mut u_prob : Double
+  weight : Double
+} derive(@debug.Debug)
+pub fn FSFieldParams::log_weight(Self) -> Double
+pub fn FSFieldParams::new(String, m_prob? : Double, u_prob? : Double, weight? : Double) -> Self
+
+pub struct FellegiSunterModel {
+  field_params : Array[FSFieldParams]
+  match_threshold : Double
+  non_match_threshold : Double
+  mut prior_match_prob : Double
+} derive(@debug.Debug)
+pub fn FellegiSunterModel::add_field(Self, FSFieldParams) -> Unit
+pub fn FellegiSunterModel::classify(Self, Double) -> @core.MatchStatus
+pub fn FellegiSunterModel::compute_weight(Self, Array[Bool]) -> Double
+pub fn FellegiSunterModel::em_train(Self, Array[Array[Bool]], max_iterations? : Int, convergence_delta? : Double) -> Unit
+pub fn FellegiSunterModel::new(prior_match_prob? : Double) -> Self
+
+pub struct FieldScorerConfig {
+  field_name : String
+  weight : Double
+  agreement_threshold : Double
+} derive(Eq, @debug.Debug)
+pub fn FieldScorerConfig::new(String, weight? : Double, agreement_threshold? : Double) -> Self
+
+pub struct HybridScorer {
+  field_configs : Array[FieldScorerConfig]
+  fs_model : FellegiSunterModel
+  rule_set : RuleSet
+  rule_weight : Double
+  fs_weight : Double
+  fuzzy_weight : Double
+} derive(@debug.Debug)
+pub fn HybridScorer::add_field(Self, FieldScorerConfig) -> Unit
+pub fn HybridScorer::new(FellegiSunterModel, RuleSet, rule_weight? : Double, fs_weight? : Double, fuzzy_weight? : Double) -> Self
+pub fn HybridScorer::score_pair(Self, @core.Record, @core.Record) -> @core.MatchPair
+
+pub enum RuleAtom {
+  FieldEqual(String)
+  FieldSimilarityAbove(String, Double)
+  Phonetic(String)
+  AlwaysTrue
+  AlwaysFalse
+} derive(Eq, @debug.Debug)
+
+pub struct RuleContext {
+  field_similarities : Map[String, Double]
+  record_a : @core.Record
+  record_b : @core.Record
+} derive(@debug.Debug)
+pub fn RuleContext::get_similarity(Self, String) -> Double
+pub fn RuleContext::new(@core.Record, @core.Record) -> Self
+pub fn RuleContext::set_similarity(Self, String, Double) -> Unit
+
+pub enum RuleExpr {
+  Atom(RuleAtom)
+  Not(RuleExpr)
+  Combine(RuleOp, Array[RuleExpr])
+} derive(@debug.Debug)
+
+pub enum RuleOp {
+  And
+  Or
+} derive(Eq, @debug.Debug)
+
+pub struct RuleSet {
+  rules : Array[RuleExpr]
+  combination_op : RuleOp
+} derive(@debug.Debug)
+pub fn RuleSet::add_rule(Self, RuleExpr) -> Unit
+pub fn RuleSet::evaluate(Self, RuleContext) -> Bool
+pub fn RuleSet::new(combination_op? : RuleOp) -> Self
+
+// Type aliases
+
+// Traits
+
