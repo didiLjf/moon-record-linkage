@@ -14,19 +14,19 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Setup MoonBit Toolchain
-        uses: moonbitlang/setup-moonbit@v1
-        with:
-          version: 'latest'
+      - name: Install MoonBit Toolchain
+        run: |
+          curl -fsSL https://cli.moonbitlang.com/install/unix.sh | bash
+          echo "$HOME/.moon/bin" >> $GITHUB_PATH
 
       - name: Verify Code Formatting
-        run: moon fmt --check
+        run: $HOME/.moon/bin/moon fmt --check
 
       - name: Interface Integrity Check
-        run: moon info
+        run: $HOME/.moon/bin/moon info
 
       - name: Type Check & Lint
-        run: moon check
+        run: $HOME/.moon/bin/moon check
 
       - name: Run Test Suite
-        run: moon test
+        run: $HOME/.moon/bin/moon test
