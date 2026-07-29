@@ -1,5 +1,5 @@
 // Generated using `moon info`, DON'T EDIT IT
-package "DidiLs/moon-record-linkage/src/core"
+package "didiLjf/moon-record-linkage/src/core"
 
 import {
   "moonbitlang/core/debug",

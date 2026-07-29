@@ -1,5 +1,5 @@
 // Generated using `moon info`, DON'T EDIT IT
-package "DidiLs/moon-record-linkage/src/similarity"
+package "didiLjf/moon-record-linkage/src/similarity"
 
 // Values
 pub fn age_bin_similarity(Int, Int, bin_size? : Int) -> Double

@@ -1,5 +1,5 @@
 // Generated using `moon info`, DON'T EDIT IT
-package "DidiLs/moon-record-linkage/src/normalization"
+package "didiLjf/moon-record-linkage/src/normalization"
 
 // Values
 pub fn apply_cleaners(String, Array[(String) -> String]) -> String

@@ -1,8 +1,8 @@
 // Generated using `moon info`, DON'T EDIT IT
-package "DidiLs/moon-record-linkage/src/graph"
+package "didiLjf/moon-record-linkage/src/graph"
 
 import {
-  "DidiLs/moon-record-linkage/src/core",
+  "didiLjf/moon-record-linkage/src/core",
   "moonbitlang/core/debug",
 }
 

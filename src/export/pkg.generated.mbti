@@ -1,9 +1,9 @@
 // Generated using `moon info`, DON'T EDIT IT
-package "DidiLs/moon-record-linkage/src/export"
+package "didiLjf/moon-record-linkage/src/export"
 
 import {
-  "DidiLs/moon-record-linkage/src/core",
-  "DidiLs/moon-record-linkage/src/pipeline",
+  "didiLjf/moon-record-linkage/src/core",
+  "didiLjf/moon-record-linkage/src/pipeline",
 }
 
 // Values

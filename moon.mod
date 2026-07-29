@@ -9,7 +9,7 @@
 //   "moonbitlang/x@0.4.6",
 // }
 
-name = "DidiLs/moon-record-linkage"
+name = "didiLjf/moon-record-linkage"
 
 version = "0.1.0"
 

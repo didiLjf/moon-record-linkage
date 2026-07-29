@@ -1,5 +1,5 @@
 // Generated using `moon info`, DON'T EDIT IT
-package "DidiLs/moon-record-linkage/src/main"
+package "didiLjf/moon-record-linkage/src/main"
 
 // Values
 pub fn run_demo() -> Unit

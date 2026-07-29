@@ -1,4 +1,4 @@
 import {
-  "DidiLs/moon-record-linkage/src/core",
-  "DidiLs/moon-record-linkage/src/similarity",
+  "didiLjf/moon-record-linkage/src/core",
+  "didiLjf/moon-record-linkage/src/similarity",
 }
