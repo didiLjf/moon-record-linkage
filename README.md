@@ -1,69 +1,127 @@
 # Moon Record Linkage
 
-[![MoonBit](https://img.shields.io/badge/MoonBit-stable-blue.svg)](https://www.moonbitlang.com/)
-[![License](https://img.shields.io/badge/License-Apache--2.0-green.svg)](LICENSE)
+[![MoonBit](https://img.shields.io/badge/MoonBit-stable-3678ff.svg)](https://www.moonbitlang.com/)
+[![License](https://img.shields.io/badge/License-Apache--2.0-2ea44f.svg)](LICENSE)
 [![CI](https://github.com/didiLjf/moon-record-linkage/actions/workflows/test.yml/badge.svg)](https://github.com/didiLjf/moon-record-linkage/actions/workflows/test.yml)
 
-MoonBit 原生实体匹配、记录链接与去重引擎。本项目参加的是 **2026 年 8 月官方 MoonBit 黑客松**，当前版本面向项目验收，重点是可运行的记录治理流程、可解释匹配、可复现实测基准和跨目标 CI。
+MoonBit 原生实体匹配、记录链接与去重引擎，适用于 CRM、ERP、账单和数据治理场景。本项目参加 **2026 年 8 月官方 MoonBit 黑客松**，提供从数据质量检查、候选生成、相似度评分到实体合并和结果导出的完整流程。
 
-## 能解决什么问题
+## Features
 
-- 对 CRM、账单、ERP 等来源的异构记录进行规范化、质量检查和字段血缘分析。
-- 用 Standard Blocking、Sorted Neighborhood、Canopy、LSH 和组合策略缩小候选空间。
-- 用编辑距离、Jaro-Winkler、N-gram、数值/地理相似度和语音编码构建可解释分数。
-- 用 Fellegi-Sunter/EM、规则和集成评分处理 Match、PossibleMatch、NonMatch。
-- 用实体图、DSU 和规范化合并生成实体簇，并导出 JSON、CSV、Markdown 报告。
-- 通过确定性合成数据、真实工具链计时、阈值校准和基准矩阵评估运行结果。
+- **数据质量与血缘**：schema 推断、字段缺失/类型校验、重复 ID 检测、来源分布和字段血缘报告。
+- **候选生成**：Standard Blocking、Sorted Neighborhood、Canopy、LSH 以及组合策略，支持候选去重、预算限制和统计分析。
+- **相似度与模型**：编辑距离、Jaro-Winkler、N-gram、数值/地理相似度、Soundex、Metaphone、NYSIIS、MRA、规则模型和 Fellegi-Sunter/EM。
+- **可解释决策**：输出字段贡献、加权分数、阈值判断、校准结果和 Match / PossibleMatch / NonMatch 状态。
+- **实体图与合并**：DSU 聚类、冲突证据、canonical record 选择和多种合并策略。
+- **生产流程能力**：批处理、分页、重试、增量状态、审计轨迹、结果分析和 JSON/CSV/Markdown 导出。
+- **可复现评测**：确定性合成数据、真实工具链计时、场景套件、基准矩阵和聚合报告。
 
-## 仓库结构
+## Architecture
 
 ```text
-src/core/          数据模型、质量校验、质量汇总、配置、schema、血缘
-src/normalization/ 清洗、中文域规则、分词、记录规范化审计
+src/core/          数据模型、配置、质量校验、schema、质量汇总、字段血缘
+src/normalization/ 文本清洗、中文域规则、分词、记录规范化审计
 src/phonetic/      Soundex、Metaphone、NYSIIS、MRA
-src/similarity/    编辑距离、Jaro-Winkler、token、数值、地理
-src/blocking/      Blocking 算法、候选计划、统计与自适应建议
-src/model/         规则、Fellegi-Sunter、混合/集成、解释、校准
-src/graph/         DSU、实体图、冲突证据、canonical merge
-src/pipeline/      批处理、分页、重试、增量状态、审计轨迹、结果分析
-src/evaluation/    确定性数据生成、评测指标、基准、场景套件、矩阵聚合
-src/export/        JSON/CSV/Markdown 质量、血缘、候选、评测与验收包
-src/main/          CLI 参数、benchmark/quality 演示
+src/similarity/    编辑距离、Jaro-Winkler、token、数值、地理相似度
+src/blocking/      Blocking 算法、候选计划、统计和自适应策略
+src/model/         规则、Fellegi-Sunter、混合/集成评分、解释和校准
+src/graph/         DSU、实体图、冲突检测、证据和 canonical merge
+src/pipeline/      批处理、分页、重试、增量状态、审计和结果分析
+src/evaluation/    合成数据、评测指标、基准、场景套件和矩阵聚合
+src/export/        质量、血缘、候选、评测和汇总报告导出
+src/main/          CLI 演示与命令解析
 cmd/main/          可执行入口
 ```
 
-## 快速开始
+运行时数据流：
 
-安装 stable MoonBit 工具链后执行：
+```text
+records → quality checks → normalization → blocking
+        → field comparison → scoring → graph clustering
+        → canonical merge → metrics and export
+```
+
+## Requirements
+
+- MoonBit stable toolchain
+- Git（从源码构建时需要）
+
+查看当前工具链：
 
 ```bash
 moon version --all
+```
+
+## Quick start
+
+在仓库根目录执行：
+
+```bash
 moon update
 moon fmt --check
 moon info
 moon check --deny-warn --target all
-moon test --deny-warn --target all
-moon test --deny-warn --target native
+moon test --deny-warn --target wasm-gc
 ```
 
-运行质量概览和可复现基准：
+Unix 环境还可以运行 native 测试和全目标构建：
+
+```bash
+moon test --deny-warn --target native
+moon build --target all
+```
+
+Windows CI 使用 wasm-gc 作为可移植验证目标；当前 stable 工具链的 Windows native runtime 仍存在 `rand_s` 编译兼容性问题。
+
+## CLI
+
+运行内置质量概览：
 
 ```bash
 moon run cmd/main -- quality
+```
+
+运行确定性基准：
+
+```bash
 moon run cmd/main -- benchmark --records 1000 --seed 20260818
 ```
 
-基准程序使用工具链时钟测量完整的合成数据生成、Blocking、评分和指标计算流程；输出中的 `elapsed_ticks`、候选数、precision、recall、F1 和 reduction 均来自本次实际运行，不是静态样例。当前 Windows 源码规模统计命令为：
+基准程序覆盖合成数据生成、Blocking、评分和指标计算，并使用工具链时钟记录运行时间。输出中的候选数、precision、recall、F1、candidate reduction 和 elapsed ticks 均来自实际运行。
 
-```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File scripts/count_moonbit_lines.ps1
+## Library usage
+
+```moonbit
+import {
+  "didiLjf/moon-record-linkage/src/core" @core,
+  "didiLjf/moon-record-linkage/src/pipeline" @pipeline,
+}
+
+let config = @core.LinkageConfig::new("customer-dedup")
+config.add_blocking(@core.StandardBlocking(["city"]))
+config.add_field_comparison("name", @core.JaroWinkler, weight=2.0)
+config.add_field_comparison("phone", @core.ExactMatch, weight=1.0)
+config.set_thresholds(0.80, 0.45)
+
+let pipeline = @pipeline.BatchPipeline::new(config)
+let result = pipeline.run_link(left_records, right_records)
 ```
 
-## 当前验收基线
+质量门禁和报告可以独立使用：
 
-以下是本次结项工作区实际测得的一次 1,000 实体基准（seed `20260818`）：
+```moonbit
+let profile = @core.quality_summary(records)
+let gate = profile.evaluate_gate(
+  max_missing_rate=0.20,
+  max_duplicate_rate=0.05,
+)
+```
 
-| 指标 | 实测值 |
+## Benchmark
+
+以下是 `1000` 个实体、seed `20260818` 的一次实际运行结果：
+
+| Metric | Value |
 | --- | ---: |
 | entities / left / right | 1000 / 1000 / 1000 |
 | gold links | 1000 |
@@ -74,29 +132,26 @@ powershell -NoProfile -ExecutionPolicy Bypass -File scripts/count_moonbit_lines.
 | elapsed ticks | 362 |
 | records per 1,000 ticks | 2762.4309392265195 |
 
-这是当前默认合成场景的压力基线：五城市 Blocking 能把 1,000,000 个笛卡尔候选降到 100,000，但也明确暴露了宽 Blocking 下的误报率，便于验收时复核阈值和策略。生产数据应使用 `CandidatePlan` 的组合/交集策略、字段权重和 `calibrate_thresholds` 进行调参，而不是把该压力场景当成业务精度承诺。
+这是默认五城市 Blocking 场景的压力基线：候选空间从 1,000,000 降至 100,000，同时暴露了宽 Blocking 策略的误报率。该数据用于复核候选规模和运行性能，不代表特定业务数据的精度承诺。实际项目应结合字段权重、组合/交集 Blocking 和 `calibrate_thresholds` 调整策略。
 
-当前源码统计为 **8,001 行非空生产 MoonBit 代码、7,151 行生产代码行**；测试文件 33 个，测试非空行 1,617 行。统计脚本排除了 `_test.mbt`、`_wbtest.mbt`、生成接口和构建产物，避免把测试或缓存冒充生产规模。
+如需重新生成统计：
 
-## API 示例
-
-```moonbit
-let config = @core.LinkageConfig::new("customer-dedup")
-config.add_blocking(@core.StandardBlocking(["city"]))
-config.add_field_comparison("name", @core.JaroWinkler, weight=2.0)
-config.add_field_comparison("phone", @core.ExactMatch, weight=1.0)
-config.set_thresholds(0.80, 0.45)
-
-let pipeline = @pipeline.BatchPipeline::new(config)
-let result = pipeline.run_link(crm_records, erp_records)
-let profile = @core.quality_summary(crm_records)
-let gate = profile.evaluate_gate(max_missing_rate=0.2, max_duplicate_rate=0.05)
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/count_moonbit_lines.ps1
 ```
 
-## CI 与发布
+## Testing and CI
 
-`.github/workflows/test.yml` 在 Ubuntu、macOS、Windows 上安装 stable 工具链，并执行格式、接口、严格检查、目标测试和 CLI smoke test；Unix runner 额外执行 native，全平台执行 wasm-gc。Windows native 由当前 stable 工具链的 `rand_s` 运行时兼容性限制隔离，避免 CI 把环境错误误报为项目错误。`.github/workflows/publish.yml` 提供手动 Mooncakes 发布入口；发布版本由 `moon.mod` 管理，发布前先在本地执行完整 CI。
+测试覆盖相似度、规范化、Blocking、模型、图聚类、流水线、评测和导出模块，并包含空数据、缺失字段、重复 ID、边界阈值、候选预算和重试等场景。
 
-## 贡献与许可证
+CI 配置位于 `.github/workflows/test.yml`：
 
-本仓库的维护者和申报人是 GitHub 用户 `didiLjf`，项目验收版本保持单一实际贡献者。仓库根目录采用 [Apache License 2.0](LICENSE)。申报书 `OSC2026_8月黑客松申报书.md` 是申报材料，结项实现不会修改该文件。
+- Ubuntu、macOS、Windows stable toolchain；
+- `moon fmt --check`、`moon info`、`moon check --deny-warn`；
+- wasm-gc 全平台验证，Unix 额外验证 native 和 all-target build；
+- CLI smoke test；
+- `.github/workflows/publish.yml` 提供手动 Mooncakes 发布入口。
+
+## License
+
+[Apache License 2.0](LICENSE)
