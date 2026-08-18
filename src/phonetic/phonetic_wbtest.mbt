@@ -27,7 +27,7 @@ test "metaphone basic" {
 test "metaphone silent letters" {
   // KN- is silent
   let code = metaphone("Knight")
-  assert_true(!code.starts_with("K"))
+  assert_true(!code.has_prefix("K"))
 }
 
 ///|

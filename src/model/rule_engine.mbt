@@ -8,6 +8,12 @@ pub enum RuleOp {
 } derive(Debug, Eq)
 
 ///|
+/// Return the supported boolean operators for configuration UIs and reports.
+pub fn RuleOp::supported() -> Array[RuleOp] {
+  [And, Or]
+}
+
+///|
 pub enum RuleAtom {
   FieldEqual(String)
   FieldSimilarityAbove(String, Double)
@@ -17,11 +23,29 @@ pub enum RuleAtom {
 } derive(Debug, Eq)
 
 ///|
+/// Return representative atom constructors for introspection tools.
+pub fn RuleAtom::supported_examples() -> Array[RuleAtom] {
+  [
+    FieldEqual("field"),
+    FieldSimilarityAbove("field", 0.8),
+    Phonetic("field"),
+    AlwaysTrue,
+    AlwaysFalse,
+  ]
+}
+
+///|
 pub enum RuleExpr {
   Atom(RuleAtom)
   Not(RuleExpr)
   Combine(RuleOp, Array[RuleExpr])
 } derive(Debug)
+
+///|
+/// Return representative expression constructors for introspection tools.
+pub fn RuleExpr::supported_examples() -> Array[RuleExpr] {
+  [Atom(AlwaysTrue), Not(Atom(AlwaysFalse)), Combine(And, [Atom(AlwaysTrue)])]
+}
 
 ///|
 pub struct RuleSet {

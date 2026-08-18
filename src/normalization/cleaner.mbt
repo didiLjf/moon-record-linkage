@@ -54,7 +54,7 @@ pub fn to_lowercase(s : String) -> String {
   let sb = StringBuilder(size_hint=chars.length())
   for ch in chars {
     if ch >= 'A' && ch <= 'Z' {
-      let shifted = Char::from_int(ch.to_int() + 32)
+      let shifted = (ch.to_int() + 32).unsafe_to_char()
       sb.write_char(shifted)
     } else {
       sb.write_char(ch)
@@ -70,7 +70,7 @@ pub fn to_uppercase(s : String) -> String {
   let sb = StringBuilder(size_hint=chars.length())
   for ch in chars {
     if ch >= 'a' && ch <= 'z' {
-      let shifted = Char::from_int(ch.to_int() - 32)
+      let shifted = (ch.to_int() - 32).unsafe_to_char()
       sb.write_char(shifted)
     } else {
       sb.write_char(ch)

@@ -8,7 +8,7 @@ fn mra_upper_alpha(s : String) -> Array[Char] {
   let result : Array[Char] = []
   for ch in chars {
     if ch >= 'a' && ch <= 'z' {
-      result.push(Char::from_int(ch.to_int() - 32))
+      result.push((ch.to_int() - 32).unsafe_to_char())
     } else if ch >= 'A' && ch <= 'Z' {
       result.push(ch)
     }

@@ -25,7 +25,7 @@ pub fn normalize_company_name(name : String) -> String {
   result = remove_parenthetical(result)
   // Strip known suffixes
   for suffix in company_suffixes {
-    if result.ends_with(suffix) {
+    if result.has_suffix(suffix) {
       let new_len = result.length() - suffix.length()
       result = string_slice(result, 0, new_len)
       break
@@ -43,7 +43,7 @@ pub fn normalize_person_name(name : String) -> String {
     prefix in [
       "先生", "女士", "小姐", "博士", "教授", "总", "主任",
     ] {
-    if result.ends_with(prefix) {
+    if result.has_suffix(prefix) {
       let new_len = result.length() - prefix.length()
       result = string_slice(result, 0, new_len)
     }
@@ -115,7 +115,7 @@ pub fn normalize_email(email : String) -> String {
       started = true
       ended = false
       if ch >= 'A' && ch <= 'Z' {
-        sb.write_char(Char::from_int(ch.to_int() + 32))
+        sb.write_char((ch.to_int() + 32).unsafe_to_char())
       } else {
         sb.write_char(ch)
       }

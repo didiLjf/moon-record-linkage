@@ -36,7 +36,7 @@ test "array field value to_str" {
   let arr = ["apple", "banana", "cherry"]
   let val = ArrayVal(arr)
   assert_eq(val.to_str(), "apple;banana;cherry")
-  assert_true(not(val.is_null()))
+  assert_true(!val.is_null())
   let empty = ArrayVal([])
   assert_true(empty.is_null())
 }
@@ -51,7 +51,7 @@ test "schema validation success" {
   valid_rec.set_field("id", StringVal("r1"))
   valid_rec.set_field("email", StringVal("test@example.com"))
   let res = schema.validate(valid_rec)
-  assert_true(res.is_ok())
+  assert_true(res is Ok(_))
 }
 
 ///|
@@ -62,7 +62,7 @@ test "schema validation missing required field" {
   let invalid_rec = Record::new("r2")
   invalid_rec.set_field("id", StringVal("r2"))
   let res = schema.validate(invalid_rec)
-  assert_true(res.is_err())
+  assert_true(res is Err(_))
 }
 
 ///|

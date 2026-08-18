@@ -15,7 +15,7 @@ fn prepare_for_metaphone(s : String) -> Array[Char] {
   let result : Array[Char] = []
   for ch in chars {
     if ch >= 'A' && ch <= 'Z' {
-      result.push(Char::from_int(ch.to_int() + 32))
+      result.push((ch.to_int() + 32).unsafe_to_char())
     } else if ch >= 'a' && ch <= 'z' {
       result.push(ch)
     }
@@ -29,7 +29,7 @@ fn get_ch(chars : Array[Char], idx : Int) -> Char {
   if idx >= 0 && idx < chars.length() {
     chars[idx]
   } else {
-    '\x00'
+    '\u0000'
   }
 }
 

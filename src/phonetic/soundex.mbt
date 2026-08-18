@@ -38,7 +38,7 @@ let soundex_table : Array[Int] = [
 /// Returns 0 for vowels and H/W, -1 for non-letters.
 fn soundex_digit(ch : Char) -> Int {
   let lower = if ch >= 'A' && ch <= 'Z' {
-    Char::from_int(ch.to_int() + 32)
+    (ch.to_int() + 32).unsafe_to_char()
   } else {
     ch
   }
@@ -66,7 +66,7 @@ pub fn soundex(s : String) -> String {
       first_letter = if ch >= 'a' {
         ch
       } else {
-        Char::from_int(ch.to_int() + 32)
+        (ch.to_int() + 32).unsafe_to_char()
       }
       first_idx = i
       break
@@ -76,7 +76,7 @@ pub fn soundex(s : String) -> String {
     return "0000"
   }
   let upper_first = if first_letter >= 'a' && first_letter <= 'z' {
-    Char::from_int(first_letter.to_int() - 32)
+    (first_letter.to_int() - 32).unsafe_to_char()
   } else {
     first_letter
   }
@@ -96,7 +96,7 @@ pub fn soundex(s : String) -> String {
       continue
     }
     if digit != 0 && digit != prev_digit {
-      sb.write_char(Char::from_int(48 + digit))
+      sb.write_char((48 + digit).unsafe_to_char())
     }
     if digit != 0 {
       prev_digit = digit

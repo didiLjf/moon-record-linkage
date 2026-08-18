@@ -10,6 +10,12 @@ pub enum MergeStrategy {
 } derive(Debug, Eq)
 
 ///|
+/// Return every supported canonicalization policy in stable display order.
+pub fn MergeStrategy::supported() -> Array[MergeStrategy] {
+  [HighestConfidence, MajorityVote, MostRecent, FirstRecord]
+}
+
+///|
 pub struct CanonicalMerger {
   strategy : MergeStrategy
 } derive(Debug, Eq)

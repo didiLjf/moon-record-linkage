@@ -82,7 +82,7 @@ pub fn BlockingIndex::candidate_pairs(
 ///|
 /// Return the number of blocks.
 pub fn BlockingIndex::block_count(self : BlockingIndex) -> Int {
-  self.blocks.size()
+  self.blocks.length()
 }
 
 ///|

@@ -7,7 +7,7 @@ fn nysiis_upper(s : String) -> Array[Char] {
   let result : Array[Char] = []
   for ch in chars {
     if ch >= 'a' && ch <= 'z' {
-      result.push(Char::from_int(ch.to_int() - 32))
+      result.push((ch.to_int() - 32).unsafe_to_char())
     } else if ch >= 'A' && ch <= 'Z' {
       result.push(ch)
     }
@@ -20,7 +20,7 @@ fn nysiis_get(chars : Array[Char], i : Int) -> Char {
   if i >= 0 && i < chars.length() {
     chars[i]
   } else {
-    '\x00'
+    '\u0000'
   }
 }
 
@@ -102,7 +102,7 @@ pub fn nysiis(s : String) -> String {
   while j < end {
     let ch = working[j]
     let prev_code = if code.is_empty() {
-      '\x00'
+      '\u0000'
     } else {
       code[code.length() - 1]
     }

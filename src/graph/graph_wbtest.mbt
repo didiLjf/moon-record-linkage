@@ -36,7 +36,7 @@ test "dsu components" {
   dsu.union("a", "b")
   dsu.union("c", "d")
   let comps = dsu.components()
-  assert_eq(comps.size(), 2)
+  assert_eq(comps.length(), 2)
 }
 
 ///|

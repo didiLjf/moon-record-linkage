@@ -25,7 +25,7 @@ pub fn jaccard_similarity(
       intersection = intersection + 1
     }
   }
-  let union = set_a.size() + set_b.size() - intersection
+  let union = set_a.length() + set_b.length() - intersection
   if union == 0 {
     1.0
   } else {
@@ -178,10 +178,10 @@ pub fn overlap_similarity(
       intersection = intersection + 1
     }
   }
-  let min_size = if set_a.size() < set_b.size() {
-    set_a.size()
+  let min_size = if set_a.length() < set_b.length() {
+    set_a.length()
   } else {
-    set_b.size()
+    set_b.length()
   }
   if min_size == 0 {
     0.0
