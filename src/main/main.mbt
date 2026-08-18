@@ -3,7 +3,7 @@
 ///|
 pub fn run_demo() -> Unit {
   println("=================================================================")
-  println("   MoonBit Entity Matching & Record Linkage Engine (v0.1.0)     ")
+  println("   MoonBit Entity Matching & Record Linkage Engine (v0.1.1)     ")
   println("=================================================================")
 
   // 1. Normalization & Cleaning Demo
