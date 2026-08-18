@@ -12,3 +12,6 @@
 - 生产 MoonBit 规模达到 8,001 行非空行、7,151 行代码行；测试 33 个文件、1,617 行非空行。
 - README 已改为 2026 年 8 月官方黑客松定位；补齐 `moon.mod` repository/description/keywords；新增三平台 CI 和手动 Mooncakes workflow。
 - Windows 本机 stable toolchain native C runtime 报 `rand_s`，因此 CI 在 Windows 执行 wasm-gc；Unix runner 执行 all/native，问题已记录且未伪报 native 通过。
+- 推送前核验 GitHub 登录用户、owner、默认分支和贡献者列表均为 `didiLjf`；GitHub main 已更新到 `37703ce`。
+- 首次 Mooncakes 发布发现 0.1.0 已存在，提升到 0.1.1 后发布成功，服务器返回 `200 OK`。
+- GitLink 服务端拒绝写入（`Gitea: User permission denied for writing`），未修改认证配置或重复重试。
