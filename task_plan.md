@@ -9,10 +9,10 @@
 - [x] 审计仓库、申报书、远程、CI、工具链与参考资料
 - [x] 形成并提交设计规格，等待用户确认
 - [x] 生成并审阅实现计划
-- [ ] 先补测试，再实现 core/blocking/model/graph/pipeline/evaluation 能力
-- [ ] 扩展 CLI、README、基准命令和发布说明
-- [ ] 升级/固定最新 stable CI，补全多目标与覆盖率流程
-- [ ] 运行完整验证、统计有效源码规模和边界测试
+- [x] 先补测试，再实现 core/blocking/model/graph/pipeline/evaluation 能力
+- [x] 扩展 CLI、README、基准命令和发布说明
+- [x] 升级/固定最新 stable CI，补全多目标与覆盖率流程
+- [x] 运行完整验证、统计有效源码规模和边界测试
 - [ ] 核验账号、默认分支、唯一贡献者与远程后提交、推送 GitHub/GitLink
 - [ ] 通过 GitHub 推送触发 Mooncakes 发布并复核结果
 - [ ] 使用 osc2026-guide 清单完成最终验收自查
@@ -30,4 +30,5 @@
 | --- | --- |
 | Firecrawl CLI 不在 PATH | 已记录，网页资料改用内置网页访问读取 |
 | `gh auth status` 读取用户配置被 Windows 权限拒绝 | 待用明确授权的 GitHub API/CLI 方式复核 |
-| 基线测试存在旧弃用/未使用警告 | 待清理，目标为 `--deny-warn` 通过 |
+| 基线测试存在旧弃用/未使用警告 | 已清理，wasm/wasm-gc `--deny-warn` 通过 |
+| Windows stable native runtime 报 `rand_s` 隐式声明 | 已在 CI 中将 Windows native 隔离为 wasm-gc；Unix 保留 native/all 验证 |

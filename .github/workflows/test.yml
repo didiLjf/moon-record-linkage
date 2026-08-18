@@ -2,31 +2,77 @@ name: MoonBit CI
 
 on:
   push:
-    branches: [ main, master ]
+    branches: [main, master]
   pull_request:
-    branches: [ main, master ]
+    branches: [main, master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
 
 jobs:
-  test:
-    runs-on: ubuntu-latest
-
+  check:
+    name: Check (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
     steps:
-      - name: Checkout Code
+      - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          persist-credentials: false
 
-      - name: Install MoonBit Toolchain
+      - name: Install stable MoonBit (Unix)
+        if: runner.os != 'Windows'
+        shell: bash
         run: |
-          curl -fsSL https://cli.moonbitlang.com/install/unix.sh | bash
-          echo "$HOME/.moon/bin" >> $GITHUB_PATH
+          curl --fail --silent --show-error --location https://cli.moonbitlang.com/install/unix.sh | bash
+          echo "$HOME/.moon/bin" >> "$GITHUB_PATH"
 
-      - name: Verify Code Formatting
-        run: $HOME/.moon/bin/moon fmt --check
+      - name: Install stable MoonBit (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          irm https://cli.moonbitlang.com/install/powershell.ps1 | iex
+          "$env:USERPROFILE\.moon\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
 
-      - name: Interface Integrity Check
-        run: $HOME/.moon/bin/moon info
+      - name: Show toolchain and refresh dependencies
+        run: |
+          moon version --all
+          moon update
 
-      - name: Type Check & Lint
-        run: $HOME/.moon/bin/moon check
+      - name: Check formatting
+        run: moon fmt --check
 
-      - name: Run Test Suite
-        run: $HOME/.moon/bin/moon test
+      - name: Check generated interfaces
+        run: |
+          moon info
+          git diff --exit-code
+
+      - name: Strict type check for every target
+        run: moon check --deny-warn --target all
+
+      - name: Run all-target tests (Unix native toolchain)
+        if: runner.os != 'Windows'
+        run: moon test --deny-warn --target all
+
+      - name: Run portable tests (Windows)
+        if: runner.os == 'Windows'
+        run: moon test --deny-warn --target wasm-gc
+
+      - name: Run native tests (Unix)
+        if: runner.os != 'Windows'
+        run: moon test --deny-warn --target native
+
+      - name: Build portable target (Windows)
+        if: runner.os == 'Windows'
+        run: moon build --target wasm-gc
+
+      - name: Build every target (Unix)
+        if: runner.os != 'Windows'
+        run: moon build --target all
+
+      - name: CLI smoke test
+        run: moon run cmd/main -- quality

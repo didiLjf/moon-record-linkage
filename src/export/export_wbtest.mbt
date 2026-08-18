@@ -36,3 +36,26 @@ test "evaluation reporter format" {
   assert_true(report.contains("Precision:"))
   assert_true(report.contains("F1-Score:"))
 }
+
+///|
+test "quality reports export profiles, candidate plans and explanations" {
+  let record = @core.Record::new("r1", source="crm")
+  record.set_field("name", @core.StringVal("Alice"))
+  let profile = @core.profile_dataset([record])
+  assert_true(dataset_profile_to_json(profile).contains("\"record_count\":1"))
+  assert_true(dataset_profile_to_csv(profile).has_prefix("field,total_count"))
+  let plan = @blocking.plan_candidates(
+    [record],
+    [record],
+    [],
+    options=@blocking.PlannerOptions::new(),
+  )
+  assert_true(candidate_plan_to_json(plan).contains("candidate_pairs"))
+  let config = @core.LinkageConfig::default()
+  config.add_field_comparison("name", @core.ExactMatch)
+  let explanation = @model.explain_pair(config, record, record)
+  assert_true(score_explanation_to_text(explanation).contains("composite"))
+  assert_true(
+    score_explanation_to_json(explanation).contains("field_contributions"),
+  )
+}

@@ -1,0 +1,5 @@
+import {
+  "moonbitlang/core/env",
+  "didiLjf/moon-record-linkage/src/core",
+  "didiLjf/moon-record-linkage/src/pipeline",
+}

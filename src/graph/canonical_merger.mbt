@@ -38,6 +38,9 @@ pub fn CanonicalMerger::select_canonical(
   if records.is_empty() {
     return @core.Record::new("empty-canonical")
   }
+  if records.length() == 1 {
+    return records[0]
+  }
   match self.strategy {
     FirstRecord => records[0]
     HighestConfidence => {

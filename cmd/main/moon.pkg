@@ -3,3 +3,8 @@
 // }
 
 pkgtype(kind: "executable")
+
+import {
+  "moonbitlang/core/env",
+  "didiLjf/moon-record-linkage/src/main" @engine,
+}

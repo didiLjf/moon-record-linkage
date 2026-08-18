@@ -7,17 +7,35 @@ import {
 }
 
 // Values
+pub fn canonical_evidence(Array[@core.Record], @core.Record) -> Array[CanonicalEvidence]
+
+pub fn detect_conflicts(Array[@core.Record]) -> ConflictReport
+
 pub fn entity_graph_to_clusters(EntityGraph, Map[String, @core.Record]) -> Array[@core.EntityCluster]
 
 // Errors
 
 // Types and methods
+pub struct CanonicalEvidence {
+  field_name : String
+  selected_value : String
+  support_count : Int
+  non_empty_count : Int
+  source_count : Int
+  confidence : Double
+} derive(Eq, @debug.Debug)
+
 pub struct CanonicalMerger {
   strategy : MergeStrategy
 } derive(Eq, @debug.Debug)
 pub fn CanonicalMerger::merge_clusters(Self, Array[@core.EntityCluster], pair_scores? : Map[String, Double]) -> Array[@core.EntityCluster]
 pub fn CanonicalMerger::new(strategy? : MergeStrategy) -> Self
 pub fn CanonicalMerger::select_canonical(Self, Array[@core.Record], pair_scores? : Map[String, Double]) -> @core.Record
+
+pub struct ConflictReport {
+  checked_records : Int
+  conflicts : Array[FieldConflict]
+} derive(@debug.Debug)
 
 pub struct DSU {
   parent : Map[String, String]
@@ -44,14 +62,21 @@ pub fn EntityGraph::cluster_count(Self) -> Int
 pub fn EntityGraph::clusters(Self) -> Map[String, Array[String]]
 pub fn EntityGraph::new() -> Self
 
+pub struct FieldConflict {
+  field_name : String
+  values : Array[String]
+  record_ids : Array[String]
+  distinct_value_count : Int
+} derive(Eq, @debug.Debug)
+
 pub enum MergeStrategy {
   HighestConfidence
   MajorityVote
   MostRecent
   FirstRecord
 } derive(Eq, @debug.Debug)
+pub fn MergeStrategy::supported() -> Array[Self]
 
 // Type aliases
 
 // Traits
-

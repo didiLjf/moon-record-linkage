@@ -7,10 +7,33 @@ import {
 }
 
 // Values
+pub fn analyze_match_pairs(Array[@core.MatchPair], high_confidence_threshold? : Double) -> ResultAnalysis
+
+pub fn result_analysis_to_json(ResultAnalysis) -> String
+
+pub fn result_analysis_to_text(ResultAnalysis) -> String
+
+pub fn retry_summary(RetryPolicy, Array[FailureRecord]) -> (Int, Int)
+
+pub fn run_paged_link(@core.LinkageConfig, Array[@core.Record], Array[@core.Record], page_size~ : Int) -> PagedLinkResult
+
+pub fn slice_page(Array[@core.Record], PageRequest) -> PageResult
 
 // Errors
 
 // Types and methods
+pub struct AuditTrail {
+  run_id : String
+  events : Array[PipelineAuditEvent]
+} derive(@debug.Debug)
+pub fn AuditTrail::count_stage(Self, String) -> Int
+pub fn AuditTrail::events_for(Self, String) -> Array[PipelineAuditEvent]
+pub fn AuditTrail::length(Self) -> Int
+pub fn AuditTrail::new(String) -> Self
+pub fn AuditTrail::record(Self, PipelineAuditEvent) -> Unit
+pub fn AuditTrail::render(Self) -> String
+pub fn AuditTrail::total_units(Self) -> Int
+
 pub struct BatchLinkageResult {
   match_pairs : Array[@core.MatchPair]
   possible_pairs : Array[@core.MatchPair]
@@ -28,7 +51,84 @@ pub fn BatchPipeline::new(@core.LinkageConfig) -> Self
 pub fn BatchPipeline::run_dedup(Self, Array[@core.Record]) -> BatchLinkageResult
 pub fn BatchPipeline::run_link(Self, Array[@core.Record], Array[@core.Record]) -> BatchLinkageResult
 
+pub struct FailureRecord {
+  record_id : String
+  attempt : Int
+  code : String
+  retryable : Bool
+  message : String
+} derive(Eq, @debug.Debug)
+pub fn FailureRecord::new(String, Int, String, Bool, String) -> Self
+
+pub struct IncrementalState {
+  records : Map[String, @core.Record]
+  batches : Map[String, Bool]
+} derive(@debug.Debug)
+pub fn IncrementalState::accept_batch(Self, String) -> Bool
+pub fn IncrementalState::batch_count(Self) -> Int
+pub fn IncrementalState::get(Self, String) -> @core.Record?
+pub fn IncrementalState::new() -> Self
+pub fn IncrementalState::record_count(Self) -> Int
+pub fn IncrementalState::upsert(Self, @core.Record) -> Bool
+
+pub struct PageRequest {
+  offset : Int
+  limit : Int
+} derive(Eq, @debug.Debug)
+pub fn PageRequest::new(offset? : Int, limit? : Int) -> Self
+
+pub struct PageResult {
+  items : Array[@core.Record]
+  offset : Int
+  next_offset : Int
+  has_more : Bool
+} derive(@debug.Debug)
+
+pub struct PagedLinkResult {
+  result : BatchLinkageResult
+  page_count : Int
+  processed_left_records : Int
+} derive(@debug.Debug)
+
+pub struct PipelineAuditEvent {
+  stage : String
+  message : String
+  units : Int
+} derive(Eq, @debug.Debug)
+pub fn PipelineAuditEvent::new(String, String, Int) -> Self
+
+pub struct ResultAnalysis {
+  total_pairs : Int
+  matches : Int
+  possible_matches : Int
+  non_matches : Int
+  high_confidence_count : Int
+  average_score : Double
+  minimum_score : Double
+  maximum_score : Double
+} derive(Eq, @debug.Debug)
+pub fn ResultAnalysis::status_rate(Self, Int) -> Double
+
+pub struct RetryPolicy {
+  max_attempts : Int
+} derive(Eq, @debug.Debug)
+pub fn RetryPolicy::allowed_attempts(Self) -> Int
+pub fn RetryPolicy::new(max_attempts? : Int) -> Self
+pub fn RetryPolicy::should_retry(Self, attempt~ : Int, retryable~ : Bool) -> Bool
+
+pub struct RunSummary {
+  batch_id : String
+  mut processed_records : Int
+  mut candidate_pairs : Int
+  mut matches : Int
+  mut failures : Int
+  mut elapsed_millis : Int64
+} derive(Eq, @debug.Debug)
+pub fn RunSummary::add_page(Self, processed~ : Int, candidates~ : Int, matches~ : Int, failures~ : Int) -> Unit
+pub fn RunSummary::new(String) -> Self
+pub fn RunSummary::set_elapsed_millis(Self, Int64) -> Unit
+pub fn RunSummary::throughput_per_second(Self) -> Double
+
 // Type aliases
 
 // Traits
-

@@ -1,4 +1,5 @@
 import {
   "didiLjf/moon-record-linkage/src/core",
   "didiLjf/moon-record-linkage/src/similarity",
+  "didiLjf/moon-record-linkage/src/phonetic",
 }

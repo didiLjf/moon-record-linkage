@@ -1,4 +1,7 @@
 import {
   "didiLjf/moon-record-linkage/src/core",
   "didiLjf/moon-record-linkage/src/pipeline",
+  "didiLjf/moon-record-linkage/src/blocking",
+  "didiLjf/moon-record-linkage/src/model",
+  "didiLjf/moon-record-linkage/src/evaluation",
 }

@@ -1,0 +1,157 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "didiLjf/moon-record-linkage/src/evaluation"
+
+import {
+  "didiLjf/moon-record-linkage/src/core",
+  "moonbitlang/core/debug",
+}
+
+// Values
+pub fn aggregate_benchmarks(Array[BenchmarkReport]) -> BenchmarkAggregate
+
+pub fn candidate_reduction_ratio(Int, Int) -> Double
+
+pub fn compare_benchmarks(String, BenchmarkReport, String, BenchmarkReport) -> BenchmarkComparison
+
+pub fn evaluate_pairs(Array[(String, String)], Array[GoldPair]) -> PairEvaluationReport
+
+pub fn generate_dataset(SyntheticDatasetConfig) -> SyntheticDataset
+
+pub fn run_benchmark(BenchmarkConfig) -> BenchmarkReport
+
+pub fn run_benchmark_matrix(Array[BenchmarkConfig]) -> BenchmarkMatrix
+
+pub fn run_scenario_suite(Array[ScenarioSpec]) -> ScenarioSuiteReport
+
+// Errors
+
+// Types and methods
+pub struct BenchmarkAggregate {
+  run_count : Int
+  total_entities : Int
+  total_candidates : Int
+  macro_f1 : Double
+  min_f1 : Double
+  max_f1 : Double
+  average_reduction_ratio : Double
+  total_elapsed_ticks : Int
+} derive(Eq, @debug.Debug)
+pub fn BenchmarkAggregate::render_csv(Self) -> String
+pub fn BenchmarkAggregate::render_json(Self) -> String
+
+pub struct BenchmarkComparison {
+  left_name : String
+  right_name : String
+  candidate_delta : Int
+  f1_delta : Double
+  reduction_delta : Double
+  elapsed_delta : Int
+  throughput_ratio : Double
+} derive(Eq, @debug.Debug)
+pub fn BenchmarkComparison::render_text(Self) -> String
+
+pub struct BenchmarkConfig {
+  entity_count : Int
+  seed : Int
+  repeats : Int
+  noise_level : Double
+} derive(Eq, @debug.Debug)
+pub fn BenchmarkConfig::new(entity_count? : Int, seed? : Int, repeats? : Int, noise_level? : Double) -> Self
+
+pub struct BenchmarkMatrix {
+  reports : Array[BenchmarkReport]
+  total_entities : Int
+  average_precision : Double
+  average_recall : Double
+  average_f1 : Double
+  average_reduction_ratio : Double
+} derive(@debug.Debug)
+pub fn BenchmarkMatrix::render_csv(Self) -> String
+pub fn BenchmarkMatrix::render_json(Self) -> String
+
+pub struct BenchmarkReport {
+  entity_count : Int
+  left_count : Int
+  right_count : Int
+  gold_link_count : Int
+  candidate_pair_count : Int
+  match_count : Int
+  precision : Double
+  recall : Double
+  f1 : Double
+  reduction_ratio : Double
+  elapsed_ticks : Int
+  repeats : Int
+} derive(Eq, @debug.Debug)
+pub fn BenchmarkReport::render_csv(Self) -> String
+pub fn BenchmarkReport::render_json(Self) -> String
+pub fn BenchmarkReport::render_text(Self) -> String
+pub fn BenchmarkReport::throughput_per_tick(Self) -> Double
+
+pub struct DeterministicRandom {
+  mut state : Int
+} derive(Eq, @debug.Debug)
+pub fn DeterministicRandom::new(Int) -> Self
+pub fn DeterministicRandom::next(Self) -> Int
+pub fn DeterministicRandom::next_bounded(Self, bound~ : Int) -> Int
+pub fn DeterministicRandom::next_unit(Self) -> Double
+
+pub struct GoldPair {
+  left_id : String
+  right_id : String
+  actual_match : Bool
+} derive(Eq, @debug.Debug)
+pub fn GoldPair::new(String, String, Bool) -> Self
+
+pub struct PairEvaluationReport {
+  true_positives : Int
+  false_positives : Int
+  false_negatives : Int
+  candidate_count : Int
+  gold_count : Int
+} derive(Eq, @debug.Debug)
+pub fn PairEvaluationReport::f1(Self) -> Double
+pub fn PairEvaluationReport::from_zero() -> Self
+pub fn PairEvaluationReport::precision(Self) -> Double
+pub fn PairEvaluationReport::recall(Self) -> Double
+
+pub struct ScenarioResult {
+  name : String
+  report : BenchmarkReport
+} derive(@debug.Debug)
+
+pub struct ScenarioSpec {
+  name : String
+  entities : Int
+  seed : Int
+  noise_level : Double
+} derive(Eq, @debug.Debug)
+pub fn ScenarioSpec::new(String, entities? : Int, seed? : Int, noise_level? : Double) -> Self
+
+pub struct ScenarioSuiteReport {
+  results : Array[ScenarioResult]
+  total_entities : Int
+  average_f1 : Double
+  average_reduction_ratio : Double
+  average_elapsed_ticks : Int
+} derive(@debug.Debug)
+pub fn ScenarioSuiteReport::render_text(Self) -> String
+
+pub struct SyntheticDataset {
+  left_records : Array[@core.Record]
+  right_records : Array[@core.Record]
+  gold_pairs : Array[GoldPair]
+  entity_count : Int
+} derive(@debug.Debug)
+
+pub struct SyntheticDatasetConfig {
+  entity_count : Int
+  seed : Int
+  noise_level : Double
+  duplicate_rate : Double
+} derive(Eq, @debug.Debug)
+pub fn SyntheticDatasetConfig::new(entity_count? : Int, seed? : Int, noise_level? : Double, duplicate_rate? : Double) -> Self
+
+// Type aliases
+
+// Traits

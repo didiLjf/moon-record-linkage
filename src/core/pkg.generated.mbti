@@ -6,6 +6,19 @@ import {
 }
 
 // Values
+pub fn build_lineage(Array[Record]) -> LineageReport
+
+pub fn infer_schema(Array[Record], required_ratio? : Double) -> SchemaInferenceResult
+
+pub fn profile_dataset(Array[Record]) -> DatasetProfile
+
+pub fn quality_summary(Array[Record]) -> QualitySummary
+
+pub fn validate_config(LinkageConfig) -> Result[Unit, RecordLinkageError]
+
+pub fn validate_dataset(Schema, Array[Record]) -> Array[ValidationIssue]
+
+pub fn validate_record(Schema, Record) -> Array[ValidationIssue]
 
 // Errors
 
@@ -17,6 +30,27 @@ pub(all) enum BlockingStrategy {
   LocalitySensitiveHashing(String, Int, Int)
   CompositeBlocking(Array[BlockingStrategy])
 } derive(Eq, @debug.Debug)
+
+pub struct DatasetProfile {
+  record_count : Int
+  distinct_id_count : Int
+  duplicate_id_count : Int
+  field_profiles : Array[FieldProfile]
+  source_counts : Map[String, Int]
+} derive(@debug.Debug)
+pub fn DatasetProfile::duplicate_rate(Self) -> Double
+pub fn DatasetProfile::id_completeness(Self) -> Double
+
+pub struct DiagnosticReport {
+  issues : Array[ValidationIssue]
+} derive(@debug.Debug)
+pub fn DiagnosticReport::add(Self, ValidationIssue) -> Unit
+pub fn DiagnosticReport::add_many(Self, Array[ValidationIssue]) -> Unit
+pub fn DiagnosticReport::error_count(Self) -> Int
+pub fn DiagnosticReport::is_valid(Self) -> Bool
+pub fn DiagnosticReport::new() -> Self
+pub fn DiagnosticReport::render(Self) -> String
+pub fn DiagnosticReport::warning_count(Self) -> Int
 
 pub struct EntityCluster {
   cluster_id : String
@@ -56,6 +90,24 @@ pub struct FieldComparisonConfig {
   missing_value_penalty : Double
 } derive(Eq, @debug.Debug)
 
+pub struct FieldLineage {
+  field_name : String
+  source_count : Int
+  present_count : Int
+  missing_count : Int
+  distinct_value_count : Int
+  source_values : Map[String, Int]
+} derive(@debug.Debug)
+
+pub struct FieldProfile {
+  name : String
+  field_type : String
+  total_count : Int
+  present_count : Int
+  null_count : Int
+  distinct_count : Int
+} derive(Eq, @debug.Debug)
+
 pub(all) enum FieldType {
   Text
   Numeric
@@ -75,6 +127,18 @@ pub(all) enum FieldValue {
 } derive(Eq, @debug.Debug)
 pub fn FieldValue::is_null(Self) -> Bool
 pub fn FieldValue::to_str(Self) -> String
+
+pub(all) enum IssueSeverity {
+  Info
+  Warning
+  Error
+} derive(Eq, @debug.Debug)
+
+pub struct LineageReport {
+  record_count : Int
+  source_count : Int
+  fields : Array[FieldLineage]
+} derive(@debug.Debug)
 
 pub struct LinkageConfig {
   blocking_strategies : Array[BlockingStrategy]
@@ -128,6 +192,39 @@ pub struct ModelThresholds {
   non_match_threshold : Double
 } derive(Eq, @debug.Debug)
 
+pub struct QualityGateResult {
+  accepted : Bool
+  failures : Array[String]
+} derive(Eq, @debug.Debug)
+pub fn QualityGateResult::failure_count(Self) -> Int
+pub fn QualityGateResult::to_json(Self) -> String
+pub fn QualityGateResult::to_text(Self) -> String
+
+pub struct QualitySummary {
+  record_count : Int
+  distinct_id_count : Int
+  duplicate_id_count : Int
+  source_count : Int
+  field_count : Int
+  missing_field_count : Int
+  missing_field_rate : Double
+  duplicate_id_rate : Double
+  source_distribution : Map[String, Int]
+} derive(Eq, @debug.Debug)
+pub fn QualitySummary::evaluate_gate(Self, max_missing_rate~ : Double, max_duplicate_rate~ : Double) -> QualityGateResult
+pub fn QualitySummary::has_data(Self) -> Bool
+pub fn QualitySummary::is_acceptable(Self, max_missing_rate~ : Double, max_duplicate_rate~ : Double) -> Bool
+pub fn QualitySummary::quality_score(Self) -> Double
+pub fn QualitySummary::record_density(Self) -> Double
+pub fn QualitySummary::risk_level(Self) -> String
+pub fn QualitySummary::source_count_for(Self, String) -> Int
+pub fn QualitySummary::source_distribution_csv(Self) -> String
+pub fn QualitySummary::source_distribution_markdown(Self) -> String
+pub fn QualitySummary::to_csv(Self) -> String
+pub fn QualitySummary::to_json(Self) -> String
+pub fn QualitySummary::to_markdown(Self) -> String
+pub fn QualitySummary::to_text(Self) -> String
+
 pub struct Record {
   id : String
   attributes : Map[String, FieldValue]
@@ -162,7 +259,27 @@ pub struct SchemaField {
   required : Bool
 } derive(Eq, @debug.Debug)
 
+pub struct SchemaInferenceReport {
+  record_count : Int
+  field_count : Int
+  required_field_count : Int
+  nullable_field_count : Int
+  warnings : Array[String]
+} derive(Eq, @debug.Debug)
+
+pub struct SchemaInferenceResult {
+  schema : Schema
+  report : SchemaInferenceReport
+} derive(@debug.Debug)
+
+pub struct ValidationIssue {
+  code : String
+  field : String
+  message : String
+  severity : IssueSeverity
+} derive(Eq, @debug.Debug)
+pub fn ValidationIssue::new(String, String, String, IssueSeverity) -> Self
+
 // Type aliases
 
 // Traits
-

@@ -27,4 +27,3 @@ pub fn soundex_match(String, String) -> Bool
 // Type aliases
 
 // Traits
-

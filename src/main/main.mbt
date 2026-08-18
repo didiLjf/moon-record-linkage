@@ -122,3 +122,85 @@ fn truncate_string(s : String, max_len : Int) -> String {
     sb.to_string()
   }
 }
+
+///|
+pub struct CliOptions {
+  mode : String
+  records : Int
+  seed : Int
+} derive(Debug, Eq)
+
+///|
+fn parse_positive_int(value : String, fallback : Int) -> Int {
+  let chars = value.to_array()
+  if chars.is_empty() {
+    return fallback
+  }
+  let mut result = 0
+  for ch in chars {
+    if ch < '0' || ch > '9' {
+      return fallback
+    }
+    result = result * 10 + (ch.to_int() - '0'.to_int())
+  }
+  result
+}
+
+///|
+pub fn parse_cli_options(args : Array[String]) -> CliOptions {
+  let mode = if args.length() > 1 { args[1] } else { "demo" }
+  let mut records = 100
+  let mut seed = 1
+  let mut index = 2
+  while index < args.length() {
+    if args[index] == "--records" && index + 1 < args.length() {
+      records = parse_positive_int(args[index + 1], records)
+      index = index + 2
+    } else if args[index] == "--seed" && index + 1 < args.length() {
+      seed = parse_positive_int(args[index + 1], seed)
+      index = index + 2
+    } else {
+      index = index + 1
+    }
+  }
+  { mode, records, seed }
+}
+
+///|
+pub fn run_benchmark_demo(records : Int, seed : Int) -> String {
+  let report = @evaluation.run_benchmark(
+    @evaluation.BenchmarkConfig::new(entity_count=records, seed~, repeats=1),
+  )
+  let text = report.render_text()
+  println(text)
+  text
+}
+
+///|
+pub fn run_quality_demo() -> String {
+  let first = @core.Record::new("quality-1", source="crm")
+  first.set_field("name", @core.StringVal("Alice"))
+  first.set_field("phone", @core.StringVal("1380001"))
+  let second = @core.Record::new("quality-2", source="erp")
+  second.set_field("name", @core.StringVal("Alice"))
+  second.set_field("phone", @core.StringVal("1380002"))
+  let profile = @core.profile_dataset([first, second])
+  let text = "records=" +
+    profile.record_count.to_string() +
+    " fields=" +
+    profile.field_profiles.length().to_string() +
+    " duplicate_rate=" +
+    profile.duplicate_rate().to_string()
+  println(text)
+  text
+}
+
+///|
+pub fn run_cli(args : Array[String]) -> Unit {
+  let options = parse_cli_options(args)
+  match options.mode {
+    "benchmark" => ignore(run_benchmark_demo(options.records, options.seed))
+    "quality" => ignore(run_quality_demo())
+    _ => run_demo()
+  }
+}

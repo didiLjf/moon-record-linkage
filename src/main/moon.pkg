@@ -5,4 +5,5 @@ import {
   "didiLjf/moon-record-linkage/src/similarity",
   "didiLjf/moon-record-linkage/src/pipeline",
   "didiLjf/moon-record-linkage/src/export",
+  "didiLjf/moon-record-linkage/src/evaluation",
 }

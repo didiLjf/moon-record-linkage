@@ -63,4 +63,3 @@ pub fn year_exact_similarity(Int, Int) -> Double
 // Type aliases
 
 // Traits
-

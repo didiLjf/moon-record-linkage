@@ -1,14 +1,30 @@
 // Generated using `moon info`, DON'T EDIT IT
 package "didiLjf/moon-record-linkage/src/main"
 
+import {
+  "moonbitlang/core/debug",
+}
+
 // Values
+pub fn parse_cli_options(Array[String]) -> CliOptions
+
+pub fn run_benchmark_demo(Int, Int) -> String
+
+pub fn run_cli(Array[String]) -> Unit
+
 pub fn run_demo() -> Unit
+
+pub fn run_quality_demo() -> String
 
 // Errors
 
 // Types and methods
+pub struct CliOptions {
+  mode : String
+  records : Int
+  seed : Int
+} derive(Eq, @debug.Debug)
 
 // Type aliases
 
 // Traits
-

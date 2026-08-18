@@ -7,13 +7,37 @@ import {
 }
 
 // Values
+pub fn block_statistics(Array[@core.Record], Array[String]) -> BlockingStats
+
+pub fn candidate_plan_to_markdown(CandidatePlan, left_count~ : Int, right_count~ : Int) -> String
+
 pub fn canopies_to_pairs(Array[Canopy]) -> Array[(String, String)]
 
 pub fn cross_match_pairs(BlockingIndex, BlockingIndex) -> Array[(String, String)]
 
+pub fn plan_candidates(Array[@core.Record], Array[@core.Record], Array[@core.BlockingStrategy], options~ : PlannerOptions) -> CandidatePlan
+
+pub fn plan_summary(CandidatePlan, left_count~ : Int, right_count~ : Int) -> String
+
+pub fn recommend_blocking(Array[@core.Record], Array[String], mode~ : AdaptiveMode) -> AdaptivePlan
+
 // Errors
 
 // Types and methods
+pub(all) enum AdaptiveMode {
+  Conservative
+  Balanced
+  Aggressive
+} derive(Eq, @debug.Debug)
+
+pub struct AdaptivePlan {
+  selected_field : String
+  strategies : Array[@core.BlockingStrategy]
+  expected_candidate_count : Int
+  largest_block_size : Int
+  reason : String
+} derive(@debug.Debug)
+
 pub struct BlockingIndex {
   blocks : Map[String, Array[String]]
   field_names : Array[String]
@@ -24,6 +48,29 @@ pub fn BlockingIndex::build_from(Self, Array[@core.Record]) -> Unit
 pub fn BlockingIndex::candidate_pairs(Self) -> Array[(String, String)]
 pub fn BlockingIndex::compute_key(Self, @core.Record) -> String
 pub fn BlockingIndex::new(Array[String]) -> Self
+
+pub struct BlockingStats {
+  record_count : Int
+  block_count : Int
+  largest_block_size : Int
+  total_memberships : Int
+  average_block_size : Double
+} derive(Eq, @debug.Debug)
+
+pub struct CandidatePair {
+  left_id : String
+  right_id : String
+  origins : Array[String]
+} derive(Eq, @debug.Debug)
+
+pub struct CandidatePlan {
+  pairs : Array[CandidatePair]
+  strategy_counts : Map[String, Int]
+  raw_pair_count : Int
+  deduplicated_pair_count : Int
+  truncated : Bool
+} derive(@debug.Debug)
+pub fn CandidatePlan::reduction_ratio(Self, Int, Int) -> Double
 
 pub struct Canopy {
   center_id : String
@@ -65,6 +112,19 @@ pub fn MultiKeyBlocker::add_index(Self, BlockingIndex) -> Unit
 pub fn MultiKeyBlocker::all_candidate_pairs(Self) -> Array[(String, String)]
 pub fn MultiKeyBlocker::new() -> Self
 
+pub(all) enum PlanMode {
+  Union
+  Intersection
+  Fallback
+} derive(Eq, @debug.Debug)
+
+pub struct PlannerOptions {
+  mode : PlanMode
+  max_pairs : Int
+  keep_empty_keys : Bool
+} derive(Eq, @debug.Debug)
+pub fn PlannerOptions::new(mode? : PlanMode, max_pairs? : Int, keep_empty_keys? : Bool) -> Self
+
 pub struct SNMBlocker {
   key_field : String
   window_size : Int
@@ -77,4 +137,3 @@ pub fn SNMBlocker::new(String, window_size? : Int) -> Self
 // Type aliases
 
 // Traits
-

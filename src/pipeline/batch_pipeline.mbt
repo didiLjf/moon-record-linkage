@@ -49,55 +49,22 @@ fn BatchPipeline::get_candidate_pairs(
   records_a : Array[@core.Record],
   records_b : Array[@core.Record],
 ) -> Array[(String, String)] {
-  if self.config.blocking_strategies.is_empty() {
-    // No blocking: full Cartesian product
-    let pairs : Array[(String, String)] = []
-    for ra in records_a {
-      for rb in records_b {
-        pairs.push((ra.id, rb.id))
-      }
-    }
-    return pairs
+  let strategies = if self.config.blocking_strategies.is_empty() {
+    []
+  } else {
+    self.config.blocking_strategies
   }
-  // Use first configured blocking strategy
-  let strategy = self.config.blocking_strategies[0]
-  match strategy {
-    @core.StandardBlocking(fields) => {
-      let idx_a = @blocking.BlockingIndex::new(fields)
-      let idx_b = @blocking.BlockingIndex::new(fields)
-      idx_a.build_from(records_a)
-      idx_b.build_from(records_b)
-      @blocking.cross_match_pairs(idx_a, idx_b)
-    }
-    @core.SortedNeighborhood(field, window) => {
-      let snm = @blocking.SNMBlocker::new(field, window_size=window)
-      snm.cross_candidate_pairs(records_a, records_b)
-    }
-    @core.LocalitySensitiveHashing(field, num_hashes, bands) => {
-      let lsh = @blocking.LSHBlocker::new(field, num_hashes~, num_bands=bands)
-      let all_records = []
-      for r in records_a {
-        all_records.push(r)
-      }
-      for r in records_b {
-        all_records.push(r)
-      }
-      lsh.candidate_pairs(all_records)
-    }
-    _ => {
-      // Default: standard blocking by first field comparison
-      let field_name = if !self.config.field_comparisons.is_empty() {
-        self.config.field_comparisons[0].field_name
-      } else {
-        "id"
-      }
-      let idx_a = @blocking.BlockingIndex::new([field_name])
-      let idx_b = @blocking.BlockingIndex::new([field_name])
-      idx_a.build_from(records_a)
-      idx_b.build_from(records_b)
-      @blocking.cross_match_pairs(idx_a, idx_b)
-    }
+  let plan = @blocking.plan_candidates(
+    records_a,
+    records_b,
+    strategies,
+    options=@blocking.PlannerOptions::new(),
+  )
+  let pairs : Array[(String, String)] = []
+  for candidate in plan.pairs {
+    pairs.push((candidate.left_id, candidate.right_id))
   }
+  pairs
 }
 
 ///|

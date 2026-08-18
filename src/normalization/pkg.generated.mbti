@@ -1,6 +1,11 @@
 // Generated using `moon info`, DON'T EDIT IT
 package "didiLjf/moon-record-linkage/src/normalization"
 
+import {
+  "didiLjf/moon-record-linkage/src/core",
+  "moonbitlang/core/debug",
+}
+
 // Values
 pub fn apply_cleaners(String, Array[(String) -> String]) -> String
 
@@ -22,6 +27,8 @@ pub fn normalize_address(String) -> String
 
 pub fn normalize_company_name(String) -> String
 
+pub fn normalize_dataset(Array[@core.Record], Array[FieldRule]) -> Array[Array[NormalizationAudit]]
+
 pub fn normalize_email(String) -> String
 
 pub fn normalize_id_card(String) -> String
@@ -29,6 +36,8 @@ pub fn normalize_id_card(String) -> String
 pub fn normalize_person_name(String) -> String
 
 pub fn normalize_phone(String) -> String
+
+pub fn normalize_record(@core.Record, Array[FieldRule]) -> Array[NormalizationAudit]
 
 pub fn normalize_whitespace(String) -> String
 
@@ -55,8 +64,35 @@ pub fn word_tokenize(String) -> Array[String]
 // Errors
 
 // Types and methods
+pub struct FieldRule {
+  field_name : String
+  rule : NormalizationRule
+} derive(Eq, @debug.Debug)
+pub fn FieldRule::new(String, NormalizationRule) -> Self
+
+pub struct NormalizationAudit {
+  field_name : String
+  rule : NormalizationRule
+  original : String
+  normalized : String
+  changed : Bool
+  skipped : Bool
+} derive(Eq, @debug.Debug)
+
+pub(all) enum NormalizationRule {
+  Lowercase
+  Uppercase
+  TrimWhitespace
+  CleanText
+  PhoneDigits
+  Company
+  Person
+  Address
+  Email
+  IdCard
+} derive(Eq, @debug.Debug)
+pub fn NormalizationRule::supported() -> Array[Self]
 
 // Type aliases
 
 // Traits
-

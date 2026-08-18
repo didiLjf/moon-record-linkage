@@ -40,3 +40,28 @@ test "batch pipeline deduplication" {
   let res = pipe.run_dedup([r1, r2])
   assert_eq(res.match_pairs.length(), 1)
 }
+
+///|
+test "batch pipeline uses the union of configured blockers" {
+  let cfg = @core.LinkageConfig::new("multi-blocking")
+  cfg.add_blocking(@core.StandardBlocking(["city"]))
+  cfg.add_blocking(@core.StandardBlocking(["name"]))
+  cfg.add_field_comparison("name", @core.ExactMatch, weight=1.0)
+  let left_one = @core.Record::new("a1")
+  left_one.set_field("name", @core.StringVal("Alice"))
+  left_one.set_field("city", @core.StringVal("Beijing"))
+  let left_two = @core.Record::new("a2")
+  left_two.set_field("name", @core.StringVal("Alice"))
+  left_two.set_field("city", @core.StringVal("Shanghai"))
+  let right_one = @core.Record::new("b1")
+  right_one.set_field("name", @core.StringVal("Alice"))
+  right_one.set_field("city", @core.StringVal("Beijing"))
+  let right_two = @core.Record::new("b2")
+  right_two.set_field("name", @core.StringVal("Bob"))
+  right_two.set_field("city", @core.StringVal("Shanghai"))
+  let result = BatchPipeline::new(cfg).run_link([left_one, left_two], [
+    right_one, right_two,
+  ])
+  assert_eq(result.candidate_pair_count, 3)
+  assert_eq(result.match_pairs.length(), 2)
+}

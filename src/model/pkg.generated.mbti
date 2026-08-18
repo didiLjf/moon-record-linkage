@@ -7,11 +7,49 @@ import {
 }
 
 // Values
+pub fn calibrate_thresholds(Array[LabeledScore], step? : Double) -> Result[CalibrationReport, @core.RecordLinkageError]
+
+pub fn compare_field_values(@core.FieldValue, @core.FieldValue, @core.MetricType) -> Double
+
 pub fn eval_rule(RuleExpr, RuleContext) -> Bool
+
+pub fn explain_pair(@core.LinkageConfig, @core.Record, @core.Record) -> ScoreExplanation
 
 // Errors
 
 // Types and methods
+pub struct CalibrationReport {
+  thresholds : Array[ThresholdPoint]
+  best_f1_threshold : Double
+  confusion_at_best : ConfusionMatrix
+} derive(@debug.Debug)
+
+pub struct ConfusionMatrix {
+  mut true_positives : Int
+  mut false_positives : Int
+  mut true_negatives : Int
+  mut false_negatives : Int
+} derive(Eq, @debug.Debug)
+pub fn ConfusionMatrix::f1(Self) -> Double
+pub fn ConfusionMatrix::from_scores(Array[LabeledScore], threshold~ : Double) -> Self
+pub fn ConfusionMatrix::precision(Self) -> Double
+pub fn ConfusionMatrix::recall(Self) -> Double
+
+pub struct EnsembleDecision {
+  score : Double
+  status : @core.MatchStatus
+  component_scores : Array[(String, Double)]
+  disagreement : Double
+  reason : String
+} derive(@debug.Debug)
+
+pub struct EnsembleScorer {
+  components : Array[ModelComponent]
+} derive(@debug.Debug)
+pub fn EnsembleScorer::add_model(Self, String, @core.LinkageConfig, weight? : Double) -> Unit
+pub fn EnsembleScorer::decide(Self, @core.Record, @core.Record) -> EnsembleDecision
+pub fn EnsembleScorer::new() -> Self
+
 pub struct FSFieldParams {
   field_name : String
   mut m_prob : Double
@@ -33,6 +71,14 @@ pub fn FellegiSunterModel::compute_weight(Self, Array[Bool]) -> Double
 pub fn FellegiSunterModel::em_train(Self, Array[Array[Bool]], max_iterations? : Int, convergence_delta? : Double) -> Unit
 pub fn FellegiSunterModel::new(prior_match_prob? : Double) -> Self
 
+pub struct FieldContribution {
+  field_name : String
+  raw_score : Double
+  weight : Double
+  weighted_score : Double
+  missing : Bool
+} derive(Eq, @debug.Debug)
+
 pub struct FieldScorerConfig {
   field_name : String
   weight : Double
@@ -52,6 +98,18 @@ pub fn HybridScorer::add_field(Self, FieldScorerConfig) -> Unit
 pub fn HybridScorer::new(FellegiSunterModel, RuleSet, rule_weight? : Double, fs_weight? : Double, fuzzy_weight? : Double) -> Self
 pub fn HybridScorer::score_pair(Self, @core.Record, @core.Record) -> @core.MatchPair
 
+pub struct LabeledScore {
+  score : Double
+  actual_match : Bool
+} derive(Eq, @debug.Debug)
+pub fn LabeledScore::new(Double, Bool) -> Self
+
+pub struct ModelComponent {
+  name : String
+  config : @core.LinkageConfig
+  weight : Double
+} derive(@debug.Debug)
+
 pub enum RuleAtom {
   FieldEqual(String)
   FieldSimilarityAbove(String, Double)
@@ -59,6 +117,7 @@ pub enum RuleAtom {
   AlwaysTrue
   AlwaysFalse
 } derive(Eq, @debug.Debug)
+pub fn RuleAtom::supported_examples() -> Array[Self]
 
 pub struct RuleContext {
   field_similarities : Map[String, Double]
@@ -74,11 +133,13 @@ pub enum RuleExpr {
   Not(RuleExpr)
   Combine(RuleOp, Array[RuleExpr])
 } derive(@debug.Debug)
+pub fn RuleExpr::supported_examples() -> Array[Self]
 
 pub enum RuleOp {
   And
   Or
 } derive(Eq, @debug.Debug)
+pub fn RuleOp::supported() -> Array[Self]
 
 pub struct RuleSet {
   rules : Array[RuleExpr]
@@ -88,7 +149,23 @@ pub fn RuleSet::add_rule(Self, RuleExpr) -> Unit
 pub fn RuleSet::evaluate(Self, RuleContext) -> Bool
 pub fn RuleSet::new(combination_op? : RuleOp) -> Self
 
+pub struct ScoreExplanation {
+  pair_id : String
+  field_contributions : Array[FieldContribution]
+  missing_fields : Array[String]
+  composite_score : Double
+  status : @core.MatchStatus
+  decision_reason : String
+} derive(@debug.Debug)
+
+pub struct ThresholdPoint {
+  threshold : Double
+  confusion : ConfusionMatrix
+  precision : Double
+  recall : Double
+  f1 : Double
+} derive(Eq, @debug.Debug)
+
 // Type aliases
 
 // Traits
-

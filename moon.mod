@@ -15,12 +15,18 @@ version = "0.1.0"
 
 readme = "README.mbt.md"
 
-repository = ""
+repository = "https://github.com/didiLjf/moon-record-linkage"
 
 license = "Apache-2.0"
 
-keywords = [ ]
+keywords = [
+  "record-linkage",
+  "entity-resolution",
+  "deduplication",
+  "blocking",
+  "entity-matching",
+]
 
 preferred_target = "wasm-gc"
 
-description = ""
+description = "A native MoonBit engine for record linkage, entity matching, deduplication, explainable scoring, and reproducible evaluation."

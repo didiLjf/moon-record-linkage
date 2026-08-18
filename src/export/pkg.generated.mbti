@@ -2,12 +2,24 @@
 package "didiLjf/moon-record-linkage/src/export"
 
 import {
+  "didiLjf/moon-record-linkage/src/blocking",
   "didiLjf/moon-record-linkage/src/core",
+  "didiLjf/moon-record-linkage/src/evaluation",
+  "didiLjf/moon-record-linkage/src/model",
   "didiLjf/moon-record-linkage/src/pipeline",
+  "moonbitlang/core/debug",
 }
 
 // Values
+pub fn candidate_plan_to_csv(@blocking.CandidatePlan) -> String
+
+pub fn candidate_plan_to_json(@blocking.CandidatePlan) -> String
+
 pub fn clusters_to_csv(Array[@core.EntityCluster]) -> String
+
+pub fn dataset_profile_to_csv(@core.DatasetProfile) -> String
+
+pub fn dataset_profile_to_json(@core.DatasetProfile) -> String
 
 pub fn entity_cluster_to_json(@core.EntityCluster) -> String
 
@@ -18,6 +30,12 @@ pub fn escape_json_string(String) -> String
 pub fn format_blocking_report(Int, Int) -> String
 
 pub fn format_metrics_report(@core.EvaluationMetrics) -> String
+
+pub fn lineage_report_to_csv(@core.LineageReport) -> String
+
+pub fn lineage_report_to_json(@core.LineageReport) -> String
+
+pub fn lineage_report_to_markdown(@core.LineageReport) -> String
 
 pub fn linkage_result_to_json(@pipeline.BatchLinkageResult) -> String
 
@@ -31,11 +49,23 @@ pub fn records_to_csv(Array[@core.Record], Array[String]) -> String
 
 pub fn records_to_json(Array[@core.Record]) -> String
 
+pub fn score_explanation_to_json(@model.ScoreExplanation) -> String
+
+pub fn score_explanation_to_text(@model.ScoreExplanation) -> String
+
 // Errors
 
 // Types and methods
+pub struct AcceptanceBundle {
+  profile : @core.DatasetProfile
+  benchmark : @evaluation.BenchmarkReport
+  test_count : Int
+  production_lines : Int
+} derive(@debug.Debug)
+pub fn AcceptanceBundle::new(@core.DatasetProfile, @evaluation.BenchmarkReport, Int, Int) -> Self
+pub fn AcceptanceBundle::render_json(Self) -> String
+pub fn AcceptanceBundle::render_markdown(Self) -> String
 
 // Type aliases
 
 // Traits
-
