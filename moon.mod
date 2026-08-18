@@ -11,9 +11,9 @@
 
 name = "didiLjf/moon-record-linkage"
 
-version = "0.1.3"
+version = "0.1.4"
 
-readme = "README.mbt.md"
+readme = "README.md"
 
 repository = "https://github.com/didiLjf/moon-record-linkage"
 
