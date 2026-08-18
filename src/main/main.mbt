@@ -3,7 +3,7 @@
 ///|
 pub fn run_demo() -> Unit {
   println("=================================================================")
-  println("   MoonBit Entity Matching & Record Linkage Engine (v0.1.2)     ")
+  println("   MoonBit Entity Matching & Record Linkage Engine (v0.1.3)     ")
   println("=================================================================")
 
   // 1. Normalization & Cleaning Demo
@@ -52,6 +52,7 @@ pub fn run_demo() -> Unit {
   println("\n--- [4] Batch Record Linkage & Deduplication Pipeline ---")
   let cfg = @core.LinkageConfig::new("demo-pipeline")
   cfg.add_blocking(@core.StandardBlocking(["name"]))
+  cfg.add_blocking(@core.StandardBlocking(["city"]))
   cfg.add_field_comparison("name", @core.JaroWinkler, weight=2.0)
   cfg.add_field_comparison("city", @core.ExactMatch, weight=1.0)
   cfg.set_thresholds(0.75, 0.45)

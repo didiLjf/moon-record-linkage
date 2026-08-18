@@ -1,22 +1,25 @@
 ///|
 /// Small deterministic pseudo-random source for reproducible fixtures and benchmarks.
 pub struct DeterministicRandom {
-  mut state : Int
+  mut state : Int64
 } derive(Debug, Eq)
 
 ///|
 pub fn DeterministicRandom::new(seed : Int) -> DeterministicRandom {
-  let normalized = if seed <= 0 { 1 } else { seed % 2147483647 }
+  let seed64 = seed.to_int64()
+  let normalized = if seed64 <= 0L { 1L } else { seed64 % 2147483647L }
   { state: normalized }
 }
 
 ///|
 pub fn DeterministicRandom::next(self : DeterministicRandom) -> Int {
-  self.state = self.state * 48271 % 2147483647
-  if self.state <= 0 {
-    self.state = 1
+  // Keep the Park-Miller multiplication in Int64 so Int32 overflow cannot
+  // collapse a valid seed into the constant state 1.
+  self.state = self.state * 48271L % 2147483647L
+  if self.state <= 0L {
+    self.state = 1L
   }
-  self.state
+  self.state.to_int()
 }
 
 ///|

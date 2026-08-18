@@ -125,14 +125,14 @@ let gate = profile.evaluate_gate(
 | --- | ---: |
 | entities / left / right | 1000 / 1000 / 1000 |
 | gold links | 1000 |
-| candidate pairs | 100000 |
-| predicted matches | 100000 |
-| precision / recall / F1 | 0.005 / 0.5 / 0.009900990099009901 |
-| candidate reduction | 0.9 |
-| elapsed ticks | 362 |
-| records per 1,000 ticks | 2762.4309392265195 |
+| candidate pairs | 990 |
+| predicted matches | 990 |
+| precision / recall / F1 | 1.0 / 0.99 / 0.9949748743718593 |
+| candidate reduction | 0.99901 |
+| elapsed ticks | 23 |
+| records per 1,000 ticks | 43478.260869565216 |
 
-这是默认五城市 Blocking 场景的压力基线：候选空间从 1,000,000 降至 100,000，同时暴露了宽 Blocking 策略的误报率。该数据用于复核候选规模和运行性能，不代表特定业务数据的精度承诺。实际项目应结合字段权重、组合/交集 Blocking 和 `calibrate_thresholds` 调整策略。
+这是默认五城市、双路复合 Blocking 场景的压力基线：候选空间从 1,000,000 降至 990，并在 10% 确定性字段噪声下保持 0.99 recall。该数据用于复核候选规模和运行性能，不代表特定业务数据的精度承诺；实际项目仍应结合字段权重、组合/交集 Blocking 和 `calibrate_thresholds` 调整策略。`elapsed_ticks` 会随机器和运行环境变化。
 
 如需重新生成统计：
 

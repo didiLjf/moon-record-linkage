@@ -25,8 +25,35 @@ test "standard blocking candidate pairs" {
   idx.add_record(r1)
   idx.add_record(r2)
   let pairs = idx.candidate_pairs()
-  // Both have same first 3 chars "ali", so they share a block
+  // Equal normalized values share a block.
   assert_true(pairs.length() >= 1)
+}
+
+///|
+test "standard blocking keeps distinct full values out of the same block" {
+  let idx = BlockingIndex::new(["name"])
+  let first = @core.Record::new("first")
+  first.set_field("name", @core.StringVal("Customer 0"))
+  let second = @core.Record::new("second")
+  second.set_field("name", @core.StringVal("Customer 1"))
+  idx.add_record(first)
+  idx.add_record(second)
+  assert_eq(idx.candidate_pairs().length(), 0)
+}
+
+///|
+test "standard blocking cross matches complete composite values" {
+  let left_index = BlockingIndex::new(["city", "phone"])
+  let right_index = BlockingIndex::new(["city", "phone"])
+  let left = @core.Record::new("left")
+  left.set_field("city", @core.StringVal("Beijing"))
+  left.set_field("phone", @core.StringVal("1380000"))
+  let right = @core.Record::new("right")
+  right.set_field("city", @core.StringVal("Beijing"))
+  right.set_field("phone", @core.StringVal("1380000"))
+  left_index.add_record(left)
+  right_index.add_record(right)
+  assert_eq(cross_match_pairs(left_index, right_index).length(), 1)
 }
 
 ///|

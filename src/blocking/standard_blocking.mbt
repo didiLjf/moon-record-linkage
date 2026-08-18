@@ -14,7 +14,7 @@ pub fn BlockingIndex::new(field_names : Array[String]) -> BlockingIndex {
 }
 
 ///|
-/// Compute the blocking key for a record by concatenating field values.
+/// Compute a normalized blocking key from the complete field values.
 pub fn BlockingIndex::compute_key(
   self : BlockingIndex,
   record : @core.Record,
@@ -27,12 +27,7 @@ pub fn BlockingIndex::compute_key(
     }
     first = false
     let val = record.get_string(fname)
-    // Use first 3 chars of each field for blocking
-    let chars = val.to_array()
-    let limit = if chars.length() < 3 { chars.length() } else { 3 }
-    for i = 0; i < limit; i = i + 1 {
-      sb.write_char(chars[i])
-    }
+    sb.write_string(@normalization.to_lowercase(val))
   }
   @normalization.to_lowercase(sb.to_string())
 }

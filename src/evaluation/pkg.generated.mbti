@@ -89,7 +89,7 @@ pub fn BenchmarkReport::render_text(Self) -> String
 pub fn BenchmarkReport::throughput_per_tick(Self) -> Double
 
 pub struct DeterministicRandom {
-  mut state : Int
+  mut state : Int64
 } derive(Eq, @debug.Debug)
 pub fn DeterministicRandom::new(Int) -> Self
 pub fn DeterministicRandom::next(Self) -> Int

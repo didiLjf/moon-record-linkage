@@ -57,3 +57,62 @@ test "benchmark report contains candidate reduction and real timer output" {
   assert_true(report.elapsed_ticks >= 0)
   assert_true(report.render_text().has_prefix("benchmark="))
 }
+
+///|
+test "default benchmark reports useful linkage quality" {
+  let report = run_benchmark(
+    BenchmarkConfig::new(entity_count=1000, seed=20260818, noise_level=0.1),
+  )
+  assert_true(report.precision >= 0.90)
+  assert_true(report.recall >= 0.85)
+  assert_true(report.f1 >= 0.85)
+  assert_true(report.candidate_pair_count < 10000)
+}
+
+///|
+test "benchmark configuration retains an exact clean pair" {
+  let report = run_benchmark(
+    BenchmarkConfig::new(entity_count=1, seed=1, noise_level=0.0),
+  )
+  assert_eq(report.candidate_pair_count, 1)
+  assert_eq(report.recall, 1.0)
+}
+
+///|
+test "synthetic benchmark noise leaves stable blocking evidence" {
+  let dataset = generate_dataset(
+    SyntheticDatasetConfig::new(
+      entity_count=1000,
+      seed=20260818,
+      noise_level=0.1,
+    ),
+  )
+  let mut exact_name_or_phone = 0
+  for i = 0; i < dataset.right_records.length(); i = i + 1 {
+    let left = dataset.left_records[i]
+    let right = dataset.right_records[i]
+    if left.get_string("name") == right.get_string("name") ||
+      left.get_string("phone") == right.get_string("phone") {
+      exact_name_or_phone = exact_name_or_phone + 1
+    }
+  }
+  assert_true(exact_name_or_phone >= 850)
+}
+
+///|
+test "deterministic random source covers the unit interval" {
+  let random = DeterministicRandom::new(20260818)
+  let mut has_low = false
+  let mut has_high = false
+  for _ in 0..<100 {
+    let value = random.next_unit()
+    if value < 0.1 {
+      has_low = true
+    }
+    if value > 0.9 {
+      has_high = true
+    }
+  }
+  assert_true(has_low)
+  assert_true(has_high)
+}

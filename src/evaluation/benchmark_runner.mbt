@@ -1,7 +1,8 @@
 ///|
 fn benchmark_config() -> @core.LinkageConfig {
   let config = @core.LinkageConfig::new("evaluation-benchmark")
-  config.add_blocking(@core.StandardBlocking(["city"]))
+  config.add_blocking(@core.StandardBlocking(["city", "phone"]))
+  config.add_blocking(@core.StandardBlocking(["city", "name"]))
   config.add_field_comparison("name", @core.JaroWinkler, weight=2.0)
   config.add_field_comparison("phone", @core.JaroWinkler, weight=1.0)
   config.set_thresholds(0.75, 0.45)
