@@ -8,7 +8,7 @@
 
 - [x] 审计仓库、申报书、远程、CI、工具链与参考资料
 - [x] 形成并提交设计规格，等待用户确认
-- [ ] 生成并审阅实现计划
+- [x] 生成并审阅实现计划
 - [ ] 先补测试，再实现 core/blocking/model/graph/pipeline/evaluation 能力
 - [ ] 扩展 CLI、README、基准命令和发布说明
 - [ ] 升级/固定最新 stable CI，补全多目标与覆盖率流程

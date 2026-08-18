@@ -6,3 +6,4 @@
 - 基线 `moon test` 通过：97/97；发现旧 API 和未使用声明警告。
 - 用户确认采用“生产级实体匹配平台能力”扩展主线。
 - 写入设计规格和持久化执行计划；尚未开始修改 MoonBit 生产代码。
+- 用户确认设计后，完成详细实现计划 `docs/superpowers/plans/2026-08-18-record-linkage-acceptance-plan.md`，并完成占位符、类型引用和需求覆盖自检。
